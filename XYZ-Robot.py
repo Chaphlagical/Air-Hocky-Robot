@@ -5,7 +5,9 @@ from tkinter.messagebox import *
 import tkinter.ttk as ttk
 from serial import *
 from serial.tools.list_ports import *
-from vision import*
+from module.Hockey import *
+from module.func import *
+from module.gui_module import *
 import platform
 import os
 
@@ -19,15 +21,8 @@ dict_Parity={"No":'N',"Even":'E',"Odd":"O","Mark":"M","Space":'S'}
 #全局变量,球对象和桌子对象
 ball=Ball()
 desk=Desk()
-
+paddle=Paddle()
 ser = Serial()
-'''ser = Serial(                           #这里的初始化需要COM3有东西才行，干脆不初始化了
- port='COM3',                              #pro's laptop左边USB是COM4，右边是COM3
- baudrate=9600,
- parity='N', #serial.PARITY_NONE
- stopbits=1,
- bytesize=8
-)'''
 
 def Serial_init():
     ser.port=Port.get()
@@ -39,8 +34,6 @@ def Serial_init():
 def send2stm32(message):#message应该是一个字符,从策略分析函数那里接收这个message参数
     ser.write(message)
 
-
-
 #GUI初始化
 tk=Tk()
 tk.title("冰球机器人控制台  ——XYZ小组")
@@ -49,7 +42,7 @@ tk.minsize(450,380)
 tk.resizable(width = False, height = False)
 Center(tk,450,380)
 if 'Linux' not in platform.platform():
-    tk.iconbitmap("./launcher.ico")
+    tk.iconbitmap("./Matrial/Photo/launcher.ico")
 canvas=Canvas(tk,width=450,height=380,bg='whitesmoke')
 canvas.pack()
 
@@ -106,10 +99,10 @@ id23=canvas.create_window(40,145,window=label13)
 id24=canvas.create_window(40,170,window=label14)
 id25=canvas.create_window(40,195,window=label15)
 
-camera_image=PhotoImage(file = 'camera.png')
+camera_image=PhotoImage(file = './Matrial/Photo/camera.png')
 label30 = LabelFrame(tk,height=150,width=120,text="点击进入监控模式",labelanchor='n',bg="whitesmoke")#labelanchor属性解决定位问题（n:北，nw:西北，center:正中，其余类推）
-button31 = Button(tk, image= camera_image,width=100, height=120,command=lambda:Cam_Showing(desk,ball))
-button32 = Button(tk, text='摄像头设置',width=15, height=1,command=lambda :Cam_Setting(desk,ball))
+button31 = Button(tk, image= camera_image,width=100, height=120,command=lambda:Cam_Showing(desk,ball,paddle))
+button32 = Button(tk, text='摄像头设置',width=15, height=1,command=lambda :Cam_Setting(desk,ball,paddle))
 id30 = canvas.create_window(215, 140, window=label30)
 id31 = canvas.create_window(215, 145, window=button31)
 id32 = canvas.create_window(360, 203, window=button32)
