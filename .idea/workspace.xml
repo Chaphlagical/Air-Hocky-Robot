@@ -3,13 +3,32 @@
   <component name="ChangeListManager">
     <list default="true" id="356d2be6-c9ec-4837-9fbb-39d2cb62862f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1(球追踪参数存档)" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HSV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/USTC.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/XYZ-Robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/XYZ-Robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/camera.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/launcher.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vision.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-29-02屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-29-23屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-29-36屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-29-56屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-30-25屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-30-59屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-31-17屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-31-29屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-31-43屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-31-55屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-32-12屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-32-42屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-33-57屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-34-04屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-34-16屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-34-25屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 15-34-38屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/2018-11-02 16-11-37屏幕截图.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matrial/PPT/视觉部分.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XYZ-GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/XYZ-GUI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XYZ-Robot.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/Hockey.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/Hockey.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/Strategy.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/Strategy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/module/func.py" beforeDir="false" afterPath="$PROJECT_DIR$/module/func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vision1.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,10 +39,11 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Electric_Design$XYZ_Robot.coverage" NAME="XYZ-Robot Coverage Results" MODIFIED="1540869291540" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Electric_Design$gui_module.coverage" NAME="gui_module Coverage Results" MODIFIED="1540869096294" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/module" />
+    <SUITE FILE_PATH="coverage/Electric_Design$draw.coverage" NAME="draw Coverage Results" MODIFIED="1542106686893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../C++/Huffman/Huffman" />
     <SUITE FILE_PATH="coverage/Electric_Design$main.coverage" NAME="main Coverage Results" MODIFIED="1539693430993" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Electric_Design$vision.coverage" NAME="vision Coverage Results" MODIFIED="1540563161818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Electric_Design$kaerman.coverage" NAME="kaerman Coverage Results" MODIFIED="1540559138058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Electric_Design$XYZ_GUI.coverage" NAME="XYZ-GUI Coverage Results" MODIFIED="1541149470337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Electric_Design$XYZ_GUI.coverage" NAME="XYZ-GUI Coverage Results" MODIFIED="1542113999421" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -43,46 +63,51 @@
     <session id="914468816">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="8" />
+          <entry key="project.closed" value="9" />
           <entry key="project.open.time.11" value="3" />
           <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.15" value="1" />
           <entry key="project.open.time.16" value="3" />
           <entry key="project.open.time.17" value="1" />
           <entry key="project.open.time.18" value="1" />
+          <entry key="project.open.time.19" value="1" />
           <entry key="project.open.time.2" value="1" />
+          <entry key="project.open.time.21" value="1" />
           <entry key="project.open.time.24" value="1" />
+          <entry key="project.open.time.27" value="1" />
           <entry key="project.open.time.32" value="1" />
           <entry key="project.open.time.33" value="1" />
           <entry key="project.open.time.36" value="1" />
+          <entry key="project.open.time.39" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="19" />
+          <entry key="project.opened" value="24" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="png" value="1" />
-          <entry key="py" value="25" />
+          <entry key="py" value="27" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Image" value="1" />
-          <entry key="Python" value="25" />
+          <entry key="Python" value="27" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="7" />
-          <entry key="py" value="25625" />
+          <entry key="Python Console" value="67" />
+          <entry key="py" value="31666" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="25632" />
+          <entry key="Python" value="31733" />
         </counts>
       </usages-collector>
     </session>
@@ -92,8 +117,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/XYZ-GUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="3090">
+              <caret line="178" column="56" selection-start-line="178" selection-start-column="26" selection-end-line="178" selection-end-column="56" />
               <folding>
                 <element signature="e#25#43#0" expanded="true" />
               </folding>
@@ -102,48 +127,30 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/XYZ-Robot.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6390">
-              <caret line="224" column="13" selection-end-line="224" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vision1.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="1040" column="26" selection-start-line="1040" selection-start-column="26" selection-end-line="1040" selection-end-column="26" />
-              <folding>
-                <element signature="e#23#39#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/module/func.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1320">
-              <caret line="44" column="22" lean-forward="true" selection-start-line="44" selection-start-column="22" selection-end-line="44" selection-end-column="22" />
+            <state relative-caret-position="363">
+              <caret line="373" column="12" lean-forward="true" selection-start-line="373" selection-start-column="12" selection-end-line="373" selection-end-column="12" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
+                <marker date="1541760799729" expanded="true" signature="14146:14745" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/module/Strategy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="3" column="11" lean-forward="true" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
+            <state relative-caret-position="-387">
+              <caret column="27" lean-forward="true" selection-start-column="27" selection-end-column="27" />
               <folding>
-                <marker date="1541149469986" expanded="true" signature="55:70" ph="..." />
+                <marker date="1541757601541" expanded="true" signature="106:368" ph="..." />
+                <marker date="1541757601541" expanded="true" signature="254:368" ph="..." />
+                <marker date="1541757601541" expanded="true" signature="389:511" ph="..." />
+                <marker date="1541757601541" expanded="true" signature="466:511" ph="..." />
+                <marker date="1541757601541" expanded="true" signature="605:606" ph="..." />
+                <marker date="1541757601541" expanded="true" signature="605:610" ph="..." />
               </folding>
             </state>
           </provider>
@@ -152,8 +159,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/module/gui_module.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3679">
-              <caret line="113" column="141" selection-start-line="113" selection-start-column="141" selection-end-line="113" selection-end-column="141" />
+            <state relative-caret-position="-6357">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
                 <element signature="e#182#916#0" />
@@ -162,11 +169,15 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/module/Hockey.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="74" column="38" selection-start-line="74" selection-start-column="38" selection-end-line="74" selection-end-column="38" />
+            <state relative-caret-position="355">
+              <caret line="293" column="26" lean-forward="true" selection-start-line="293" selection-start-column="26" selection-end-line="293" selection-end-column="26" />
+              <folding>
+                <element signature="e#23#39#0" expanded="true" />
+                <marker date="1542114398780" expanded="true" signature="12240:12281" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -185,7 +196,6 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/module/Strategy.py" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/XYZ-Robot.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -201,11 +211,12 @@
         <option value="$PROJECT_DIR$/vision/gui_module.py" />
         <option value="$PROJECT_DIR$/vision/func.py" />
         <option value="$PROJECT_DIR$/XYZ-Robot.py" />
-        <option value="$PROJECT_DIR$/XYZ-GUI.py" />
         <option value="$PROJECT_DIR$/module/gui_module.py" />
-        <option value="$PROJECT_DIR$/module/func.py" />
-        <option value="$PROJECT_DIR$/module/Hockey.py" />
         <option value="$PROJECT_DIR$/module/Strategy.py" />
+        <option value="$PROJECT_DIR$/XYZ-GUI.py" />
+        <option value="$PROJECT_DIR$/module/func.py" />
+        <option value="$PROJECT_DIR$/../../C++/Huffman/Huffman/draw.py" />
+        <option value="$PROJECT_DIR$/module/Hockey.py" />
       </list>
     </option>
   </component>
@@ -216,10 +227,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="373" />
-    <option name="y" value="80" />
-    <option name="width" value="1400" />
-    <option name="height" value="1000" />
+    <option name="x" value="202" />
+    <option name="y" value="357" />
+    <option name="width" value="1390" />
+    <option name="height" value="1007" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -227,7 +238,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -249,6 +259,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -315,6 +326,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="draw" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Electric_Design" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../C++/Huffman/Huffman" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../C++/Huffman/Huffman/draw.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="gui_module" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Electric_Design" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -329,28 +362,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/module/gui_module.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="kaerman" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Electric_Design" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/kaerman.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -384,17 +395,17 @@
     <list>
       <item itemvalue="Python.vision" />
       <item itemvalue="Python.XYZ-Robot" />
-      <item itemvalue="Python.kaerman" />
       <item itemvalue="Python.gui_module" />
       <item itemvalue="Python.XYZ-GUI" />
+      <item itemvalue="Python.draw" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.XYZ-GUI" />
+        <item itemvalue="Python.draw" />
         <item itemvalue="Python.XYZ-Robot" />
         <item itemvalue="Python.gui_module" />
         <item itemvalue="Python.vision" />
-        <item itemvalue="Python.kaerman" />
       </list>
     </recent_temporary>
   </component>
@@ -424,12 +435,12 @@
     <frame x="0" y="34" width="1920" height="1046" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4909688" visible="true" weight="0.22907725" />
-      <window_info id="Structure" order="1" sideWeight="0.5090312" side_tool="true" weight="0.22585838" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4883721" visible="true" weight="0.24517168" />
+      <window_info id="Structure" order="1" sideWeight="0.5116279" side_tool="true" weight="0.24195279" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.18757062" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.31864408" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -438,8 +449,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.27118644" />
-      <window_info anchor="bottom" id="Python Console" order="12" weight="0.23728813" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.26892656" />
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.23702031" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -483,11 +494,6 @@
           <url>file://$PROJECT_DIR$/vision/Hockey.py</url>
           <line>122</line>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/vision1.py</url>
-          <line>696</line>
-          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -539,50 +545,60 @@
     <entry file="file://$PROJECT_DIR$/vision/Hockey.py" />
     <entry file="file://$PROJECT_DIR$/vision/gui_module.py" />
     <entry file="file://$PROJECT_DIR$/kaerman.py" />
-    <entry file="file://$PROJECT_DIR$/XYZ-Robot.py">
+    <entry file="file://$PROJECT_DIR$/XYZ-Robot.py" />
+    <entry file="file://$PROJECT_DIR$/vision1.py" />
+    <entry file="file://$PROJECT_DIR$/../../C++/Huffman/Huffman/draw.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6390">
-          <caret line="224" column="13" selection-end-line="224" selection-end-column="13" />
+        <state relative-caret-position="1365">
+          <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#16#0" expanded="true" />
+            <marker date="1542106733532" expanded="true" signature="1567:1569" ph="..." />
+            <marker date="1542106733532" expanded="true" signature="1567:1880" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/XYZ-GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        <state relative-caret-position="3090">
+          <caret line="178" column="56" selection-start-line="178" selection-start-column="26" selection-end-line="178" selection-end-column="56" />
           <folding>
             <element signature="e#25#43#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vision1.py">
+    <entry file="file://$PROJECT_DIR$/module/func.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="1040" column="26" selection-start-line="1040" selection-start-column="26" selection-end-line="1040" selection-end-column="26" />
+        <state relative-caret-position="363">
+          <caret line="373" column="12" lean-forward="true" selection-start-line="373" selection-start-column="12" selection-end-line="373" selection-end-column="12" />
           <folding>
-            <element signature="e#23#39#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
+            <marker date="1541760799729" expanded="true" signature="14146:14745" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/module/func.py">
+    <entry file="file://$PROJECT_DIR$/module/Strategy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1320">
-          <caret line="44" column="22" lean-forward="true" selection-start-line="44" selection-start-column="22" selection-end-line="44" selection-end-column="22" />
+        <state relative-caret-position="-387">
+          <caret column="27" lean-forward="true" selection-start-column="27" selection-end-column="27" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <marker date="1541757601541" expanded="true" signature="106:368" ph="..." />
+            <marker date="1541757601541" expanded="true" signature="254:368" ph="..." />
+            <marker date="1541757601541" expanded="true" signature="389:511" ph="..." />
+            <marker date="1541757601541" expanded="true" signature="466:511" ph="..." />
+            <marker date="1541757601541" expanded="true" signature="605:606" ph="..." />
+            <marker date="1541757601541" expanded="true" signature="605:610" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/module/gui_module.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3679">
-          <caret line="113" column="141" selection-start-line="113" selection-start-column="141" selection-end-line="113" selection-end-column="141" />
+        <state relative-caret-position="-6357">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
             <element signature="e#182#916#0" />
@@ -592,17 +608,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/module/Hockey.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="74" column="38" selection-start-line="74" selection-start-column="38" selection-end-line="74" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/module/Strategy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="3" column="11" lean-forward="true" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
+        <state relative-caret-position="355">
+          <caret line="293" column="26" lean-forward="true" selection-start-line="293" selection-start-column="26" selection-end-line="293" selection-end-column="26" />
           <folding>
-            <marker date="1541149469986" expanded="true" signature="55:70" ph="..." />
+            <element signature="e#23#39#0" expanded="true" />
+            <marker date="1542114398780" expanded="true" signature="12240:12281" ph="..." />
           </folding>
         </state>
       </provider>

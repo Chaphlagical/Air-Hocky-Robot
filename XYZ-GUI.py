@@ -16,8 +16,15 @@ dict_Parity = {"No": 'N', "Even": 'E', "Odd": "O", "Mark": "M", "Space": 'S'}
 
 # 全局变量,球对象和桌子对象
 ball = Ball()
+ball_before=Ball()
+ball_before.kernel_close_size=ball.kernel_close_size
+ball_before.kernel_open_size=ball.kernel_open_size
+ball_before.upper=ball.upper
+ball_before.lower=ball.lower
+
 desk = Desk()
 paddle = Paddle()
+cor=Coordinate()
 ser = Serial()
 
 
@@ -98,9 +105,12 @@ id24 = canvas.create_window(40, 170, window=label14)
 id25 = canvas.create_window(40, 195, window=label15)
 
 camera_image = PhotoImage(file='./Matrial/Photo/camera.png')
+
+
+
 label30 = LabelFrame(tk, height=150, width=120, text="点击进入监控模式", labelanchor='n',
                      bg="whitesmoke")  # labelanchor属性解决定位问题（n:北，nw:西北，center:正中，其余类推）
-button31 = Button(tk, image=camera_image, width=100, height=120, command=lambda: Cam_Showing(desk, ball, paddle))
+button31 = Button(tk, image=camera_image, width=100, height=120, command=lambda :Image_Processing(desk,paddle,ser))
 button32 = Button(tk, text='摄像头设置', width=15, height=1, command=lambda: Cam_Setting(desk, ball, paddle))
 id30 = canvas.create_window(215, 140, window=label30)
 id31 = canvas.create_window(215, 145, window=button31)
@@ -163,14 +173,15 @@ def Start_serial():
             ser.open()
         except:
             showwarning("错误！", "检查串口设置并重置总开关")
-        while 1:  # 不必设置全局变量cansend，因为并行线程如果进入关闭模式，会直接关闭串口，这个线程会跟着发送错误然后退出
+            
+        '''while 1:  # 不必设置全局变量cansend，因为并行线程如果进入关闭模式，会直接关闭串口，这个线程会跟着发送错误然后退出
             try:
                 ser.write(bytes(Message, encoding='gbk'))  # message是个字符，由策略函数修改
                 sleep(0.01)  # 暂停0.1秒，等待单片机
             except:
                 if ser.isOpen():  # 区分两种情形
                     showwarning("错误！", "检查串口设置并重置总开关")
-                break
+                break'''
     elif Switch_mode.get() == "停止串口通信":
         Switch_mode.set("开始串口通信")
         print("切换到停止")
@@ -231,4 +242,19 @@ else:
     id71 = canvas.create_window(150, 260, window=label71)
     label72 = Label(tk, text="il faut tenter de vivre", font=("Kunstler Script", 50), bg='whitesmoke')
     id72 = canvas.create_window(245, 320, window=label72)
+
+##################################################
+
+
+
+
+button100 = Button(tk, text='测试', width=5,
+                  command=Searching_port_launcher)  # button启动的函数不能接受参数，此时使用lambda，先计算函数结果，然后把结果强制重组为一个匿名简单函数
+id100 = canvas.create_window(350, 250, window=button100)
+
+##################################################
+
+
+
+
 tk.mainloop()

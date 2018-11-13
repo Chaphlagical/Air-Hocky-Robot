@@ -48,7 +48,6 @@ def show_original(desk,hockey):
     try:
         while (True):
             desk.get_frame()
-            print(desk.capture.get(3),desk.capture.get(4),desk.capture.get(5))
             if hockey==desk:
                 cv.imshow('camera original', hockey.frame)
             else:
@@ -259,12 +258,20 @@ def show_locate(desk,paddle,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2):
     paddle.upper = np.array([int(hmax.get()), int(smax.get()), int(vmax.get())])
     paddle.kernel_open_size = int(kernel1.get())
     paddle.kernel_close_size = int(kernel2.get())
+    desk.get_frame()
+    paddle.reflesh(desk.frame_transformed)
+    paddle.preprocess(None, True)
+    paddle.draw()
+    cv.circle(paddle.frame_locate, (paddle.x, paddle.y), 5, (0, 0, 255), 7)
+    img=paddle.frame_locate
     try:
         while (True):
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None,True)
             paddle.draw()
+            
+            cv.circle(img,(paddle.x,paddle.y),5, (0, 0, 255), 7)
             cv.imshow('camera locate', paddle.frame_locate)
             if cv.waitKey(1) & 0xff == ord('q'):
                 cv.destroyWindow('camera locate')
@@ -325,3 +332,43 @@ def Set_Paddle_Track_Param(root, canvas, paddle):
     id_label8 = canvas.create_window(40, 330, window=label8)
     id_label9 = canvas.create_window(170, 330, window=label9)
     return hmin, smin, vmin, hmax, smax, vmax, kernel1, kernel2
+
+cor=Coordinate()
+ser=Serial()
+
+def set_coord_sys(desk,paddle):
+    try:
+        while(True):
+            if cor.correct==np.zeros((3,2)):
+                msg=input()
+                ser.write(bytes(msg, encoding='gbk'))
+                while(ser.read()==None):
+                    desk.get_frame()
+                    paddle.reflesh(desk.frame_transformed)
+                    paddle.preprocess(None, True)
+                    paddle.draw()
+                cor.get_cam_array(paddle.x,paddle.y)
+                cor.get_mcu_array(int(msg[1:4]),int(msg[4:7]))
+                cor.Correct()
+            else:
+                break
+    except:
+        pass
+        
+def Image_Processing(desk,paddle,ser):
+    desk.set_capture()
+    cv.startWindowThread()
+    set_coord_sys(desk,paddle)
+    try:
+        while(True):
+            desk.get_frame()
+            paddle.reflesh(desk.frame_transformed)
+            paddle.preprocess(None,True)
+            paddle.draw()
+            cv.imshow('main', paddle.frame_locate)
+            if cv.waitKey(1) & 0xff == ord('q'):
+                cv.destroyWindow('main')
+                desk.capture.release()
+                break
+    except:
+        pass
