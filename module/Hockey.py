@@ -5,6 +5,7 @@ import math
 from tkinter.messagebox import *
 from serial import *
 from serial.tools.list_ports import *
+from threading import *
 
 # 桌子类
 class Desk:
@@ -203,8 +204,10 @@ class Paddle:
                               2: (0, 0), 3: (0, 0)}
         self.mcu_point = (0, 0)  # 单片机坐标
         self.correct = None  # 纠正矩阵
-        self.cam_array = np.zeros((3, 3))  # 求纠正矩阵需要的摄像头坐标数据
-        self.mcu_array = np.zeros((3, 2))  # 求纠正矩阵需要的单片机坐标数据
+        self.rx=None #纠正后的x坐标
+        self.ry=None #纠正后的y坐标
+        self.msg=None #串口数据
+        
     
     def reflesh(self, frame):  # 刷新帧
         self.frame_original = frame.copy()
@@ -244,55 +247,128 @@ class Paddle:
             self.frame_locate = cv.circle(self.frame_locate, center, 5, (0, 0, 255), 7)
         except Exception as error:
             showerror("Error!", str(error) + "\nPlease check!")
+    
+    def get_msg(self,mode):
+        self.msg='a'+str(int(mode)) + (3 - len(str(self.rx))) * '0' + str(self.rx) + (3 - len(str(self.ry))) * '0' + str(self.ry)
 
 
-class Coordinate:
+class MySerial():#没必要继承Serial类，最好还是创建一个实例，起到隔离方法的作用
     def __init__(self):
-        self.cam = np.zeros((1, 3))
-        self.mcu = np.zeros((1, 2))
-        self.correct = np.zeros((3, 2))
-        self.cam_array = np.zeros((3, 3))
-        self.mcu_array = np.zeros((3, 2))
-        self.flag_cam = 0
-        self.flag_mcu = 0
-    
-    def get_cam_array(self, x, y):
-        if self.flag_cam > 2:
-            return
-        else:
-            self.cam_array[self.flag_cam] = np.array([x, y, 1])
-            self.flag_cam += 1
-    
-    def get_mcu_array(self, x, y):
-        if self.flag_mcu > 2:
-            return
-        else:
-            self.mcu_array[self.flag_mcu] = np.array([x, y])
-            self.flag_mcu += 1
-    
-    def Correct(self):
-        try:
-            if self.flag_mcu > 2 and self.flag_cam > 2 and self.correct == np.zeros((3, 2)):
-                self.correct = np.matmul(np.linalg.inv(self.cam_array), self.mcu_array)
-        except:
-            self.flag_cam=self.flag_mcu=0
-            
-    def num2cam(self, x, y):
-        self.cam = np.array([x, y, 1])
-    
-    def get_mcu(self):
-        self.mcu = np.matmul(self.cam, self.correct)
 
-    def point2msg(self, x, y, mode):  # 点坐标转消息
-        return str(int(mode)) + (3 - len(str(x))) * '0' + str(x) + (3 - len(str(y))) * '0' + str(y)
-        
-    def send_msg(self,ser,mode):
-        msg=self.point2msg(self.mcu[0],self.mcu[1], mode)
-        ser.write(bytes(msg, encoding='ascii'))
-        
-    def receive_msg(self,ser):
-        print(ser.read(8))
-        
-    def print_coordinate(self):
-        print('单片机坐标',self.mcu,'摄像头坐标',self.cam)
+        self.ser=Serial()
+        self.coordinate_or_modification=0  # 0表示目标点的坐标，1表示修正手柄坐标
+        self.X_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
+        self.Y_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
+        self.can_send=False  # 每次策略函数更新一次数据就把它置真一次
 
+        self.RECEIVE_X_COORDINATE = 0
+        self.RECEIVE_Y_COORDINATE = 0
+        
+        self.msg=None
+
+        # 定义参数字典
+        # dict_COM没有设置必要，本来就需要用字符串赋值
+        self.dict_Baudrate = {"9600": 9600, "14500": 14500}
+        self.dict_Bytesize = {"8": 8, "7": 7, "6": 6, "5": 5}
+        self.dict_Stopbits = {"1": 1, "1.5": 1.5, "2": 2}
+        self.dict_Parity = {"No": 'N', "Even": 'E', "Odd": "O", "Mark": "M", "Space": 'S'}
+
+
+    def Serial_init(self):
+        self.ser.port = self.Port.get()#Port变量是gui部分的，怎么才能访问到它
+        self.ser.baudrate = self.dict_Baudrate[self.Baudrate.get()]
+        self.ser.bytesize = self.dict_Bytesize[self.Bytesize.get()]
+        self.stopbits = self.dict_Stopbits[self.Stopbits.get()]
+        self.parity = self.dict_Parity[self.Parity.get()]
+
+    def ana_simu_timer(self):
+
+
+        if self.X_COORDINATE < 500:
+            self.X_COORDINATE = self.X_COORDINATE + 1
+        else:
+            self.X_COORDINATE = 100
+
+        if self.Y_COORDINATE < 500:
+            self.Y_COORDINATE = self.Y_COORDINATE + 1
+        else:
+            self.Y_COORDINATE = 100
+            self.can_send = True
+        self.mytimer = Timer(1, self.ana_simu_timer)  # 自调mytimer#不能省略！赋值定义就是初始化，执行过一次之后必须初始化！有标记的
+        self.mytimer.start()
+
+    def Start_serial_launcher(self):
+        self.th = Thread(target=self.Start_serial, args=())
+        self.th.setDaemon(True)
+        self.th.start()
+        self.mytimer = Timer(1, self.ana_simu_timer)  # 定义定时器timer
+        self.mytimer.start()
+
+
+    def Start_serial(self):
+        # 提前创建x_coordinate也没用，之后赋值时又会重新创建
+        if self.Switch_mode.get() == "开始串口通信":
+            self.Switch_mode.set("停止串口通信")
+            print("切换到开始")
+            try:
+                self.Serial_init()  # 设置串口信息之后inwaiting会清空
+                self.ser.open()
+            except:
+                showwarning("错误1！", "检查串口设置并重置总开关")
+
+            # 开启串口接收线程
+            self.th2 = Thread(target=self.Start_receive_serial, args=())
+            self.th2.setDaemon(True)
+            self.th2.start()
+
+            while 1:  # 不必设置全局变量cansend，因为并行线程如果进入关闭模式，会直接关闭串口，这个线程会跟着发送错误然后退出
+                try:
+                    # ser.write(bytes(Message, encoding='gbk'))  # message是个字符
+                    if self.can_send:
+                        self.x_coordinate = self.X_COORDINATE
+                        self.y_coordinate = self.Y_COORDINATE
+                        self.can_send = False  # 为了避免发送过程中数据更新，那就把允许发送标记的置假放在一开始就行了......
+
+                        self.ser.write(b"a")  # 先发送校验位'
+
+                        self.ser.write(bytes(chr(self.coordinate_or_modification + 48), encoding='ascii'))  # ord('0')=48
+                        self.ser.write(bytes(chr(self.x_coordinate // 100 + 48), encoding='ascii'))  # 如果发送过程中被改了怎么办？必须先复制一次两个坐标！
+                        self.ser.write(bytes(chr(self.x_coordinate % 100 // 10 + 48), encoding='ascii'))
+                        self.ser.write(bytes(chr(self.x_coordinate % 10 + 48), encoding='ascii'))
+                        self.ser.write(bytes(chr(self.y_coordinate // 100 + 48), encoding='ascii'))
+                        self.ser.write(bytes(chr(self.y_coordinate % 100 // 10 + 48), encoding='ascii'))
+                        self.ser.write(bytes(chr(self.y_coordinate % 10 + 48), encoding='ascii'))
+                        time.sleep(0.01)  # 暂停0.1秒，等待单片机
+                except:
+                    if self.ser.isOpen():  # 区分两种情形
+                        showwarning("错误2！", "检查串口设置并重置总开关")
+                    break
+        elif self.Switch_mode.get() == "停止串口通信":
+            self.Switch_mode.set("开始串口通信")
+            print("切换到停止")
+            self.ser.close()
+
+    def Start_receive_serial(self):
+        while 1:
+            try:
+                if not self.ser.isOpen():
+                    #print('ser is close, thus incable of receiving')
+                    break
+
+                if self.ser.inWaiting() > 0:
+                    self.msg = self.ser.read(1)  # 重要知识，ser.write参数必须是bytes，ser.read的输出参数也是bytes
+                    '''if ch == b'b':
+                        self.RECEIVE_X_COORDINATE = int(self.ser.read(1)) * 100 + int(self.ser.read(1)) * 10 + int(self.ser.read(1))
+                        self.RECEIVE_Y_COORDINATE = int(self.ser.read(1)) * 100 + int(self.ser.read(1)) * 10 + int(self.ser.read(1))
+                        print(self.RECEIVE_X_COORDINATE)
+                        print(self.RECEIVE_Y_COORDINATE)'''
+
+            except:
+                pass
+    
+    def SendData(self,x,y,mode):
+        self.coordinate_or_modification=mode#0 modification ,1 coordinate
+        self.X_COORDINATE=x
+        self.Y_COORDINATE=y
+        self.can_send=True
+    

@@ -8,6 +8,7 @@ import threading
 from module.Hockey import*
 import time
 
+
 # 获取摄像头id列表
 def Cam_Select():
     if 'Linux' in platform.platform():  # 判断系统类型
@@ -333,32 +334,82 @@ def Set_Paddle_Track_Param(root, canvas, paddle):
     id_label9 = canvas.create_window(170, 330, window=label9)
     return hmin, smin, vmin, hmax, smax, vmax, kernel1, kernel2
 
-cor=Coordinate()
-ser=Serial()
 
-def set_coord_sys(desk,paddle):
-    try:
-        while(True):
-            if cor.correct==np.zeros((3,2)):
-                msg=input()
-                ser.write(bytes(msg, encoding='gbk'))
-                while(ser.read()==None):
-                    desk.get_frame()
-                    paddle.reflesh(desk.frame_transformed)
-                    paddle.preprocess(None, True)
-                    paddle.draw()
-                cor.get_cam_array(paddle.x,paddle.y)
-                cor.get_mcu_array(int(msg[1:4]),int(msg[4:7]))
-                cor.Correct()
-            else:
+'''ball=Ball()
+desk=Desk()
+paddle=Paddle()
+ser=main_gui(ball,desk,paddle)'''
+def Coordinate_Correction(desk,paddle,winname,ser):
+    cv.startWindowThread()
+    cam_t1=mcu_t1=cam_t2=mcu_t2=cam_t3=mcu_t3=None
+    cam_array=mcu_array=None
+    flag=0
+    #ser.SendData(260,100,0)
+    while(True):
+        try:
+            desk.get_frame()
+            print(desk.frame_transformed)
+            #paddle.reflesh(desk.frame_transformed)
+            #paddle.preprocess(None,True)
+            #paddle.draw()
+            cv.imshow('main',desk.frame_transformed)
+            '''if ser.msg=='1':
+                #x:40~480 y:100~520
+                mcu_t1=(260,100)
+                if flag==0:
+                    flag+=1
+                elif flag>=1 and flag<=3:
+                    cam_t1 = (cam_t1[0]+paddle.x, cam_t1[1]+paddle.y)
+                    flag+=1
+                else:
+                    cam_t1=(cam_t1[0]/3,cam_t1[1]/3)
+                    flag=0
+                    ser.msg=None
+                    ser.SendData(400,450,0)
+            elif ser.msg=='2':
+                mcu_t2=(400,450)
+                if flag==0:
+                    flag+=1
+                elif flag>=1 and flag<=3:
+                    cam_t2 = (cam_t2[0]+paddle.x, cam_t2[1]+paddle.y)
+                    flag+=1
+                else:
+                    cam_t2=(cam_t2[0]/3,cam_t2[1]/3)
+                    flag=0
+                    ser.msg=None
+                    ser.SendData(100,450.0)
+            elif ser.msg=='3':
+                mcu_t3=(100,450)
+                if flag==0:
+                    flag+=1
+                elif flag>=1 and flag<=3:
+                    cam_t3 = (cam_t3[0]+paddle.x, cam_t3[1]+paddle.y)
+                    flag+=1
+                else:
+                    cam_t3=(cam_t3[0]/3,cam_t3[1]/3)
+                    flag=0
+                    ser.msg='4'
+                    ser.SendData(260,100,1)
+                    
+            elif ser.msg=='4':
+                cam_array=num2array_cam(cam_t1,cam_t2,cam_t3)
+                mcu_array=num2array_mcu(mcu_t1,mcu_t2,mcu_t3)
+                paddle.correct=Correct(cam_array,mcu_array)
+                ser.msg=None
+                break'''
+            if cv.waitKey(1) & 0xff == ord('q'):
                 break
-    except:
-        pass
-        
+        except :
+            ser.SendData(260,100,0)
+            pass
+    
+
+    
 def Image_Processing(desk,paddle,ser):
     desk.set_capture()
     cv.startWindowThread()
-    set_coord_sys(desk,paddle)
+    cv.namedWindow('main')
+    Coordinate_Correction(desk,paddle,'main',ser)
     try:
         while(True):
             desk.get_frame()
@@ -372,3 +423,5 @@ def Image_Processing(desk,paddle,ser):
                 break
     except:
         pass
+    
+    
