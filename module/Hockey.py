@@ -9,7 +9,7 @@ from threading import *
 
 # 桌子类
 class Desk:
-    def __init__(self, id=-1):
+    def __init__(self, id=1):
         self.id = id  # 摄像头编号
         self.frame = None  # 帧
         self.capture = None  # 视频流
@@ -294,8 +294,8 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
         else:
             self.Y_COORDINATE = 100
             self.can_send = True
-        self.mytimer = Timer(1, self.ana_simu_timer)  # 自调mytimer#不能省略！赋值定义就是初始化，执行过一次之后必须初始化！有标记的
-        self.mytimer.start()
+        #self.mytimer = Timer(1, self.ana_simu_timer)  # 自调mytimer#不能省略！赋值定义就是初始化，执行过一次之后必须初始化！有标记的
+        #self.mytimer.start()
 
     def Start_serial_launcher(self):
         self.th = Thread(target=self.Start_serial, args=())
@@ -356,7 +356,7 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
                     break
 
                 if self.ser.inWaiting() > 0:
-                    self.msg = self.ser.read(1)  # 重要知识，ser.write参数必须是bytes，ser.read的输出参数也是bytes
+                    self.msg = str(self.ser.read(1))[2]  # 重要知识，ser.write参数必须是bytes，ser.read的输出参数也是bytes
                     '''if ch == b'b':
                         self.RECEIVE_X_COORDINATE = int(self.ser.read(1)) * 100 + int(self.ser.read(1)) * 10 + int(self.ser.read(1))
                         self.RECEIVE_Y_COORDINATE = int(self.ser.read(1)) * 100 + int(self.ser.read(1)) * 10 + int(self.ser.read(1))
@@ -371,4 +371,4 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
         self.X_COORDINATE=x
         self.Y_COORDINATE=y
         self.can_send=True
-    
+        print("Send Data:"+str(x)+str(y))

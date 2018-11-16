@@ -340,20 +340,23 @@ desk=Desk()
 paddle=Paddle()
 ser=main_gui(ball,desk,paddle)'''
 def Coordinate_Correction(desk,paddle,winname,ser):
-    cv.startWindowThread()
+    #cv.startWindowThread()
     cam_t1=mcu_t1=cam_t2=mcu_t2=cam_t3=mcu_t3=None
     cam_array=mcu_array=None
     flag=0
-    #ser.SendData(260,100,0)
+    ser.SendData(260,100,0)
     while(True):
         try:
             desk.get_frame()
-            print(desk.frame_transformed)
-            #paddle.reflesh(desk.frame_transformed)
-            #paddle.preprocess(None,True)
+            paddle.reflesh(desk.frame_transformed)
+            paddle.preprocess(None, True)
+            time.sleep(2)
+            print('flag=',flag)
             #paddle.draw()
-            cv.imshow('main',desk.frame_transformed)
-            '''if ser.msg=='1':
+            # print(paddle.x,paddle.y)
+            #cv.imshow('main', paddle.frame_locate)
+            if ser.msg=='1':
+                print(paddle.x,paddle.y)
                 #x:40~480 y:100~520
                 mcu_t1=(260,100)
                 if flag==0:
@@ -365,8 +368,10 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                     cam_t1=(cam_t1[0]/3,cam_t1[1]/3)
                     flag=0
                     ser.msg=None
+                    ser.ser.flush()
                     ser.SendData(400,450,0)
             elif ser.msg=='2':
+                print(paddle.x, paddle.y)
                 mcu_t2=(400,450)
                 if flag==0:
                     flag+=1
@@ -377,8 +382,10 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                     cam_t2=(cam_t2[0]/3,cam_t2[1]/3)
                     flag=0
                     ser.msg=None
+                    ser.ser.flush()
                     ser.SendData(100,450.0)
             elif ser.msg=='3':
+                print(paddle.x, paddle.y)
                 mcu_t3=(100,450)
                 if flag==0:
                     flag+=1
@@ -389,36 +396,42 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                     cam_t3=(cam_t3[0]/3,cam_t3[1]/3)
                     flag=0
                     ser.msg='4'
+                    ser.ser.flush()
                     ser.SendData(260,100,1)
                     
             elif ser.msg=='4':
                 cam_array=num2array_cam(cam_t1,cam_t2,cam_t3)
                 mcu_array=num2array_mcu(mcu_t1,mcu_t2,mcu_t3)
                 paddle.correct=Correct(cam_array,mcu_array)
+                print(paddle.correct)
                 ser.msg=None
-                break'''
+                break
             if cv.waitKey(1) & 0xff == ord('q'):
                 break
-        except :
+        except Exception as Err:
             ser.SendData(260,100,0)
+            print(Err)
             pass
     
 
-    
 def Image_Processing(desk,paddle,ser):
+    th = threading.Thread(target=lambda :Image_Processing_target(desk,paddle,ser))
+    th.setDaemon(True)
+    th.start()
+def Image_Processing_target(desk,paddle,ser):
     desk.set_capture()
-    cv.startWindowThread()
-    cv.namedWindow('main')
+    #cv.startWindowThread()
+    #cv.namedWindow('main')
     Coordinate_Correction(desk,paddle,'main',ser)
     try:
         while(True):
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None,True)
-            paddle.draw()
-            cv.imshow('main', paddle.frame_locate)
+            #paddle.draw()
+            #cv.imshow('main', paddle.frame_locate)
             if cv.waitKey(1) & 0xff == ord('q'):
-                cv.destroyWindow('main')
+                #cv.destroyWindow('main')
                 desk.capture.release()
                 break
     except:

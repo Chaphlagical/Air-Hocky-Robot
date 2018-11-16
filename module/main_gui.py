@@ -157,7 +157,7 @@ class main_gui(MySerial):
 
     def Searching_port_launcher(self):
         self.th = Thread(target=self.Searching_port)
-        self.th.setDaemon(TRUE)
+        self.th.setDaemon(True)
         self.th.start()
 
     def Searching_port(self):
