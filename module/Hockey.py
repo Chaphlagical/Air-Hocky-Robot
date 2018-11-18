@@ -6,11 +6,15 @@ from tkinter.messagebox import *
 from serial import *
 from serial.tools.list_ports import *
 from threading import *
+import platform
 
 # 桌子类
 class Desk:
-    def __init__(self, id=1):
-        self.id = id  # 摄像头编号
+    def __init__(self, id=-1):
+        if 'Linux' in platform.platform():
+            self.id = id  # 摄像头编号
+        else:
+            self.id=1
         self.frame = None  # 帧
         self.capture = None  # 视频流
         self.corner_points = {0: (0, 0), 1: (0, 0), 2: (0, 0), 3: (0, 0)}  # 角点字典
@@ -25,7 +29,7 @@ class Desk:
     def judge_flag(self):  # 判断角点字典是否填满,作为跳出循环的标志
         count = 0
         for index in self.corner_points.keys():
-            if self.corner_points[index] != (0, 0):
+            if self.corner_points[index]!= (0, 0):
                 count += 1
         if count == 4:
             return True
@@ -150,24 +154,12 @@ class Ball:
             if mode == True:
                 self.vx = (self.x - frame.x) / self.sec
                 self.vy = (self.y - frame.y) / self.sec
-                if math.fabs(self.x - frame.x) > 10 or math.fabs(self.y - frame.y) > 4:
+                if math.fabs(self.x - frame.x) > 4 or math.fabs(self.y - frame.y) > 4:
                     pass
                 else:
                     self.vx = self.vy = 0
                     self.uint_x = self.uint_y = 0
                     return
-                try:
-                    L = (self.vx ** 2 + self.vy ** 2) ** 0.5
-                    if self.vy > 0:
-                        self.unit_x = math.ceil(self.vx * 10 / L)
-                    else:
-                        self.uint_x = int(self.vx * 10 / L)
-                    if self.vy > 0:
-                        self.uint_y = math.ceil(self.vy * 10 / L)
-                    else:
-                        self.uint_y = int(self.vy * 10 / L)
-                except:
-                    self.uint_x = self.uint_y = 0
         except Exception as error:
             showerror("Error", str(error) + "Please check!")
     
@@ -178,7 +170,7 @@ class Ball:
             self.frame_locate = cv.circle(self.frame_original, center, self.radius, (0, 255, 0), 2)
             self.frame_locate = cv.circle(self.frame_locate, center, 1, (255, 0, 0), 2)
             self.frame_track = self.frame_locate.copy()
-            cv.line(self.frame_track, (self.x, self.y), (self.x + 10 * self.uint_x, self.y + 10 * self.uint_y),
+            cv.line(self.frame_track, (self.x, self.y), (int(self.x + 10 * self.vx), int(self.y + 10 * self.vy)),
                     (255, 0, 0), 5)
         except Exception as error:
             showerror("Error!", str(error) + "\nPlease check!")
@@ -371,4 +363,4 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
         self.X_COORDINATE=x
         self.Y_COORDINATE=y
         self.can_send=True
-        print("Send Data:"+str(x)+str(y))
+        #print("Send Data:"+str(x)+str(y))

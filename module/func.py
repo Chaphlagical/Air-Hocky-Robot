@@ -7,7 +7,7 @@ from module.Strategy import *
 import threading
 from module.Hockey import*
 import time
-
+import design
 
 # 获取摄像头id列表
 def Cam_Select():
@@ -341,7 +341,7 @@ paddle=Paddle()
 ser=main_gui(ball,desk,paddle)'''
 def Coordinate_Correction(desk,paddle,winname,ser):
     #cv.startWindowThread()
-    cam_t1=mcu_t1=cam_t2=mcu_t2=cam_t3=mcu_t3=None
+    cam_t1=mcu_t1=cam_t2=mcu_t2=cam_t3=mcu_t3=(0,0)
     cam_array=mcu_array=None
     flag=0
     ser.SendData(260,100,0)
@@ -350,55 +350,55 @@ def Coordinate_Correction(desk,paddle,winname,ser):
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None, True)
-            time.sleep(2)
+            time.sleep(0.5)
             print('flag=',flag)
-            #paddle.draw()
-            # print(paddle.x,paddle.y)
-            #cv.imshow('main', paddle.frame_locate)
             if ser.msg=='1':
-                print(paddle.x,paddle.y)
+                print(paddle.x, paddle.y)
                 #x:40~480 y:100~520
                 mcu_t1=(260,100)
-                if flag==0:
+                if flag<=3:
                     flag+=1
-                elif flag>=1 and flag<=3:
+                elif flag>=4 and flag<=7:
                     cam_t1 = (cam_t1[0]+paddle.x, cam_t1[1]+paddle.y)
                     flag+=1
                 else:
-                    cam_t1=(cam_t1[0]/3,cam_t1[1]/3)
+                    cam_t1=(cam_t1[0]/4,cam_t1[1]/4)
+                    print(cam_t1)
                     flag=0
                     ser.msg=None
                     ser.ser.flush()
                     ser.SendData(400,450,0)
+                    print("获得第一组数据")
             elif ser.msg=='2':
                 print(paddle.x, paddle.y)
                 mcu_t2=(400,450)
-                if flag==0:
+                if flag<=3:
                     flag+=1
-                elif flag>=1 and flag<=3:
+                elif flag>=4 and flag<=7:
                     cam_t2 = (cam_t2[0]+paddle.x, cam_t2[1]+paddle.y)
                     flag+=1
                 else:
-                    cam_t2=(cam_t2[0]/3,cam_t2[1]/3)
+                    cam_t2=(cam_t2[0]/4,cam_t2[1]/4)
+                    print(cam_t2)
                     flag=0
                     ser.msg=None
                     ser.ser.flush()
-                    ser.SendData(100,450.0)
+                    ser.SendData(100,450,0)
+                    print('获得第二组数据')
             elif ser.msg=='3':
                 print(paddle.x, paddle.y)
                 mcu_t3=(100,450)
-                if flag==0:
-                    flag+=1
-                elif flag>=1 and flag<=3:
-                    cam_t3 = (cam_t3[0]+paddle.x, cam_t3[1]+paddle.y)
-                    flag+=1
+                if flag<=3:
+                   flag+=1
+                elif flag>=4 and flag<=7:
+                   cam_t3 = (cam_t3[0]+paddle.x, cam_t3[1]+paddle.y)
+                   flag+=1
                 else:
-                    cam_t3=(cam_t3[0]/3,cam_t3[1]/3)
-                    flag=0
-                    ser.msg='4'
-                    ser.ser.flush()
-                    ser.SendData(260,100,1)
-                    
+                   cam_t3=(cam_t3[0]/4,cam_t3[1]/4)
+                   print(cam_t3)
+                   flag=0
+                   ser.msg='4'
+                   ser.SendData(260,100,1)
             elif ser.msg=='4':
                 cam_array=num2array_cam(cam_t1,cam_t2,cam_t3)
                 mcu_array=num2array_mcu(mcu_t1,mcu_t2,mcu_t3)
@@ -412,29 +412,72 @@ def Coordinate_Correction(desk,paddle,winname,ser):
             ser.SendData(260,100,0)
             print(Err)
             pass
-    
 
-def Image_Processing(desk,paddle,ser):
-    th = threading.Thread(target=lambda :Image_Processing_target(desk,paddle,ser))
+def Image_Processing(desk,ball,paddle,ser):
+    th = threading.Thread(target=lambda :Image_Processing_target(desk,ball,paddle,ser))
     th.setDaemon(True)
     th.start()
-def Image_Processing_target(desk,paddle,ser):
+def Image_Processing_target(desk,ball,paddle,ser):
     desk.set_capture()
+    ball_before=Ball()
+    #flag=0
     #cv.startWindowThread()
     #cv.namedWindow('main')
     Coordinate_Correction(desk,paddle,'main',ser)
+    desk.get_frame()
+    desk.get_frame()
+    desk.get_frame()
+    desk.get_frame()
+    desk.get_frame()
+    desk.get_frame()
+    desk.get_frame()
+    desk.get_frame()
+    paddle.reflesh(desk.frame_transformed)
+    paddle.preprocess(None,True)
+    paddle.rx, paddle.ry = Get_mcu(paddle.correct, np.array(([paddle.x, paddle.y, 1])))
+    paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
+    print(paddle.rx,paddle.ry)
+    bias=math.fabs(paddle.rx-260)+math.fabs(paddle.ry-100)
+    print("误差：",bias)
+    if bias>6:
+        print("误差过大，重新采样")
+    else:
+        print("初始化成功！")
     try:
         while(True):
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None,True)
+            ball.sec = time.time()
+            desk.get_frame()
+            ball_before.reflesh(desk.frame_transformed)
+            time.sleep(ball.time)
+            desk.get_frame()
+            ball.reflesh(desk.frame_transformed)
+            ball.sec = time.time() - ball.sec
+            ball_before.preprocess(None, False)
+            ball.preprocess(ball_before, True)
+            #print('ball', ball.x, ball.y)
+            #print('paddle', paddle.x, paddle.y)
+            ball.rx,ball.ry=Get_mcu(paddle.correct,np.array(([ball.x,ball.y,1])))
+            ball.rx=int(ball.rx);ball.ry=int(ball.ry)
+            paddle.rx,paddle.ry=Get_mcu(paddle.correct,np.array(([paddle.x,paddle.y,1])))
+            paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
+            #print('ball=',ball.rx,ball.ry)
+            #print('paddle=',paddle.rx,paddle.ry)
+            move_x,move_y=design.pusher_defense(ball,paddle)
+            print(move_x,move_y)
+            if move_x!=-1 and move_y!=1:
+                print("Send")
+                ser.SendData(move_x, move_y, 1)
+
             #paddle.draw()
             #cv.imshow('main', paddle.frame_locate)
-            if cv.waitKey(1) & 0xff == ord('q'):
+            #if cv.waitKey(1) & 0xff == ord('q'):
                 #cv.destroyWindow('main')
-                desk.capture.release()
-                break
-    except:
+             ##  break
+    except Exception as err:
+        print(err)
         pass
     
     

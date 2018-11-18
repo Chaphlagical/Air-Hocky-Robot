@@ -236,7 +236,6 @@ def Cam_Setting(desk, ball, paddle):
     canvas.pack()
     ball.corner_points = desk.corner_points
     ball.frame_original = desk.frame
-    
     button1 = Button(tk, text='摄像头设置', width=10, height=3, command=lambda :cam_set_gui(desk))
     id_button1 = canvas.create_window(130, 60, window=button1)
     button2 = Button(tk, text='透视变换设置', width=10, height=3, command=lambda:transform_set_gui(desk))

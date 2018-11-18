@@ -17,10 +17,12 @@ def Correct(cam,mcu):#坐标纠正
     return np.matmul(np.linalg.inv(cam),mcu)
 
 def Get_mcu(correct,cam):#获得单片机的坐标
-    return np.matmul(cam,correct)
+    real=np.matmul(cam,correct)
+    return real[0],real[1]
 
 def get_angle(ball,x0,y0):
     return (ball.y-y0)/(ball.x-x0)
 
 def point2msg(x,y,mode):#点坐标转消息
     return str(int(mode))+(3-len(str(x)))*'0'+str(x)+(3-len(str(y)))*'0'+str(y)
+

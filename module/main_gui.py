@@ -88,7 +88,7 @@ class main_gui(MySerial):
         self.camera_image = PhotoImage(file='./Matrial/Photo/camera.png')
         self.label30 = LabelFrame(self.tk, height=150, width=120, text="点击进入监控模式", labelanchor='n',
                              bg="whitesmoke")  # self.labelanchor属性解决定位问题（n:北，nw:西北，center:正中，其余类推）
-        self.button31 = Button(self.tk, image=self.camera_image, width=100, height=120, command=lambda: Image_Processing(self.desk,self.paddle,self))
+        self.button31 = Button(self.tk, image=self.camera_image, width=100, height=120, command=lambda: Image_Processing(self.desk,self.ball,self.paddle,self))
         self.button32 = Button(self.tk, text='摄像头设置', width=15, height=1, command=lambda: Cam_Setting(self.desk, self.ball, self.paddle))
         self.id30 = self.canvas.create_window(215, 140, window=self.label30)
         self.id31 = self.canvas.create_window(215, 145, window=self.button31)
