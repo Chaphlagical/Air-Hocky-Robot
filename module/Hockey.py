@@ -161,8 +161,7 @@ class Ball:
                     self.uint_x = self.uint_y = 0
                     return
         except Exception as error:
-            showerror("Error", str(error) + "Please check!")
-    
+            pass
     def draw(self):
         try:
             self.frame_locate = self.frame_original.copy()

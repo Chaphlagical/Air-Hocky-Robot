@@ -350,10 +350,9 @@ def Coordinate_Correction(desk,paddle,winname,ser):
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None, True)
-            time.sleep(0.5)
-            print('flag=',flag)
+            time.sleep(0.6)
             if ser.msg=='1':
-                print(paddle.x, paddle.y)
+                #print(paddle.x, paddle.y)
                 #x:40~480 y:100~520
                 mcu_t1=(260,100)
                 if flag<=3:
@@ -370,7 +369,7 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                     ser.SendData(400,450,0)
                     print("获得第一组数据")
             elif ser.msg=='2':
-                print(paddle.x, paddle.y)
+                #print(paddle.x, paddle.y)
                 mcu_t2=(400,450)
                 if flag<=3:
                     flag+=1
@@ -386,7 +385,7 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                     ser.SendData(100,450,0)
                     print('获得第二组数据')
             elif ser.msg=='3':
-                print(paddle.x, paddle.y)
+                #print(paddle.x, paddle.y)
                 mcu_t3=(100,450)
                 if flag<=3:
                    flag+=1
@@ -429,9 +428,6 @@ def Image_Processing_target(desk,ball,paddle,ser):
     desk.get_frame()
     desk.get_frame()
     desk.get_frame()
-    desk.get_frame()
-    desk.get_frame()
-    desk.get_frame()
     paddle.reflesh(desk.frame_transformed)
     paddle.preprocess(None,True)
     paddle.rx, paddle.ry = Get_mcu(paddle.correct, np.array(([paddle.x, paddle.y, 1])))
@@ -443,6 +439,24 @@ def Image_Processing_target(desk,ball,paddle,ser):
         print("误差过大，重新采样")
     else:
         print("初始化成功！")
+    while(bias>6):
+        Coordinate_Correction(desk, paddle, 'main', ser)
+        desk.get_frame()
+        desk.get_frame()
+        desk.get_frame()
+        desk.get_frame()
+        desk.get_frame()
+        paddle.reflesh(desk.frame_transformed)
+        paddle.preprocess(None, True)
+        paddle.rx, paddle.ry = Get_mcu(paddle.correct, np.array(([paddle.x, paddle.y, 1])))
+        paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
+        print(paddle.rx, paddle.ry)
+        bias = math.fabs(paddle.rx - 260) + math.fabs(paddle.ry - 100)
+        print("误差：", bias)
+        if bias > 6:
+            print("误差过大，重新采样")
+        else:
+            print("初始化成功！")
     try:
         while(True):
             desk.get_frame()

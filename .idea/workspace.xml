@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="356d2be6-c9ec-4837-9fbb-39d2cb62862f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/module/Hockey.py" afterPath="$PROJECT_DIR$/module/Hockey.py" />
-      <change beforePath="$PROJECT_DIR$/module/Strategy.py" afterPath="$PROJECT_DIR$/module/Strategy.py" />
       <change beforePath="$PROJECT_DIR$/module/func.py" afterPath="$PROJECT_DIR$/module/func.py" />
-      <change beforePath="$PROJECT_DIR$/module/gui_module.py" afterPath="$PROJECT_DIR$/module/gui_module.py" />
-      <change beforePath="$PROJECT_DIR$/module/main_gui.py" afterPath="$PROJECT_DIR$/module/main_gui.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,7 +21,7 @@
     <SUITE FILE_PATH="coverage/Electric_Design$XYZ_GUI__1_.coverage" NAME="XYZ-GUI (1) Coverage Results" MODIFIED="1542359656223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Electric_Design$gui_module.coverage" NAME="gui_module Coverage Results" MODIFIED="1540869096294" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/module" />
     <SUITE FILE_PATH="coverage/Electric_Design$main.coverage" NAME="main Coverage Results" MODIFIED="1539693430993" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Air_Hocky_Robot$XYZ_GUI__1_.coverage" NAME="XYZ-GUI (1) Coverage Results" MODIFIED="1542465565107" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Air_Hocky_Robot$XYZ_GUI__1_.coverage" NAME="XYZ-GUI (1) Coverage Results" MODIFIED="1542531140122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Electric_Design$draw.coverage" NAME="draw Coverage Results" MODIFIED="1542106686893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../C++/Huffman/Huffman" />
   </component>
   <component name="DatabaseView">
@@ -147,11 +143,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Hockey.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Hockey.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/module/Hockey.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="413">
-              <caret line="172" column="111" lean-forward="false" selection-start-line="172" selection-start-column="111" selection-end-line="172" selection-end-column="111" />
+            <state relative-caret-position="17">
+              <caret line="163" column="16" lean-forward="false" selection-start-line="163" selection-start-column="16" selection-end-line="163" selection-end-column="16" />
               <folding>
                 <element signature="e#23#39#0" expanded="true" />
               </folding>
@@ -171,11 +167,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="func.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="func.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/module/func.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="479">
-              <caret line="386" column="34" lean-forward="false" selection-start-line="386" selection-start-column="34" selection-end-line="386" selection-end-column="34" />
+            <state relative-caret-position="314">
+              <caret line="352" column="26" lean-forward="false" selection-start-line="352" selection-start-column="26" selection-end-line="352" selection-end-column="26" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -231,8 +227,8 @@
         <option value="$PROJECT_DIR$/module/Strategy.py" />
         <option value="$PROJECT_DIR$/Strategy.py" />
         <option value="$PROJECT_DIR$/design.py" />
-        <option value="$PROJECT_DIR$/module/Hockey.py" />
         <option value="$PROJECT_DIR$/module/func.py" />
+        <option value="$PROJECT_DIR$/module/Hockey.py" />
       </list>
     </option>
   </component>
@@ -730,16 +726,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/module/Hockey.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="413">
-          <caret line="172" column="111" lean-forward="false" selection-start-line="172" selection-start-column="111" selection-end-line="172" selection-end-column="111" />
-          <folding>
-            <element signature="e#23#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/design.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="297">
@@ -750,10 +736,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/module/func.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="479">
-          <caret line="386" column="34" lean-forward="false" selection-start-line="386" selection-start-column="34" selection-end-line="386" selection-end-column="34" />
+        <state relative-caret-position="314">
+          <caret line="352" column="26" lean-forward="false" selection-start-line="352" selection-start-column="26" selection-end-line="352" selection-end-column="26" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/module/Hockey.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="163" column="16" lean-forward="false" selection-start-line="163" selection-start-column="16" selection-end-line="163" selection-end-column="16" />
+          <folding>
+            <element signature="e#23#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
