@@ -22,6 +22,7 @@ class Desk:
     
     def set_capture(self):
         self.capture = cv.VideoCapture(self.id)
+        self.capture.set(cv.CAP_PROP_FPS,60)
     
     def release_capture(self):
         self.capture.release()
@@ -121,6 +122,14 @@ class Ball:
                               2: (0, 0), 3: (0, 0)}
         self.time = 0  # 两帧停留的时间
         self.sec = 0
+        self.pre_x = None#上一次x
+        self.pre_y = None#上一次y
+        self.ppre_x = None#上上次x
+        self.ppre_y = None#上上次y
+        self.pre_vx = None  # 上一次x
+        self.pre_vy = None  # 上一次y
+        self.ppre_vx = None  # 上上次x
+        self.ppre_vy = None  # 上上次y
     
     def reflesh(self, frame):  # 刷新帧
         self.frame_original = frame.copy()
@@ -152,13 +161,12 @@ class Ball:
             self.y = round(self.y)
             '''轨迹计算mode为True开启'''
             if mode == True:
-                self.vx = (self.x - frame.x) / self.sec
-                self.vy = (self.y - frame.y) / self.sec
-                if math.fabs(self.x - frame.x) > 4 or math.fabs(self.y - frame.y) > 4:
+                self.vx = (self.x - self.pre_x) / self.sec
+                self.vy = (self.y - self.pre_y) / self.sec
+                if math.fabs(self.x - self.pre_x) > 1 or math.fabs(self.y - self.pre_y) > 1:
                     pass
                 else:
                     self.vx = self.vy = 0
-                    self.uint_x = self.uint_y = 0
                     return
         except Exception as error:
             pass
@@ -187,7 +195,7 @@ class Paddle:
         self.x = 0  # 目标质心的x坐标测量
         self.y = 0  # 目标质心的y坐标测量
         self.angle = 0  # 目标应运动的方向
-        self.kernel_open_size = 4  # 开运算核
+        self.kernel_open_size = 2  # 开运算核
         self.kernel_close_size = 3  # 闭运算核
         self.lower = np.array([70, 50, 50])  # 绿色阈值的下限
         self.upper = np.array([90, 255, 255])  # 绿色阈值的上限

@@ -271,7 +271,7 @@ def show_locate(desk,paddle,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2):
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None,True)
             paddle.draw()
-            
+
             cv.circle(img,(paddle.x,paddle.y),5, (0, 0, 255), 7)
             cv.imshow('camera locate', paddle.frame_locate)
             if cv.waitKey(1) & 0xff == ord('q'):
@@ -347,6 +347,7 @@ def Coordinate_Correction(desk,paddle,winname,ser):
     ser.SendData(260,100,0)
     while(True):
         try:
+            print(flag)
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None, True)
@@ -418,7 +419,8 @@ def Image_Processing(desk,ball,paddle,ser):
     th.start()
 def Image_Processing_target(desk,ball,paddle,ser):
     desk.set_capture()
-    ball_before=Ball()
+    #ball_before=Ball()
+    move_x=move_y=-1
     #flag=0
     #cv.startWindowThread()
     #cv.namedWindow('main')
@@ -460,29 +462,35 @@ def Image_Processing_target(desk,ball,paddle,ser):
     try:
         while(True):
             desk.get_frame()
-            paddle.reflesh(desk.frame_transformed)
-            paddle.preprocess(None,True)
-            ball.sec = time.time()
+            #paddle.reflesh(desk.frame_transformed)
+            #paddle.preprocess(None,True)
+            ball.sec = time.time()-ball.sec
             desk.get_frame()
-            ball_before.reflesh(desk.frame_transformed)
+            #ball_before.reflesh(desk.frame_transformed)
             time.sleep(ball.time)
-            desk.get_frame()
+            #desk.get_frame()
             ball.reflesh(desk.frame_transformed)
             ball.sec = time.time() - ball.sec
-            ball_before.preprocess(None, False)
-            ball.preprocess(ball_before, True)
+            #ball_before.preprocess(None, False)
+            ball.pre_x=ball.x;ball.pre_y=ball.y
+            ball.ppre_x=ball.pre_x;ball.ppre_y=ball.pre_y
+            ball.pre_vx = ball.vx;ball.pre_vy = ball.vy
+            ball.ppre_vx = ball.pre_vx;ball.ppre_vy = ball.pre_vy
+            ball.preprocess(True)
             #print('ball', ball.x, ball.y)
             #print('paddle', paddle.x, paddle.y)
             ball.rx,ball.ry=Get_mcu(paddle.correct,np.array(([ball.x,ball.y,1])))
             ball.rx=int(ball.rx);ball.ry=int(ball.ry)
-            paddle.rx,paddle.ry=Get_mcu(paddle.correct,np.array(([paddle.x,paddle.y,1])))
-            paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
+            #paddle.rx,paddle.ry=Get_mcu(paddle.correct,np.array(([paddle.x,paddle.y,1])))
+            #paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
             #print('ball=',ball.rx,ball.ry)
             #print('paddle=',paddle.rx,paddle.ry)
-            move_x,move_y=design.pusher_defense(ball,paddle)
-            print(move_x,move_y)
-            if move_x!=-1 and move_y!=1:
-                print("Send")
+            move_x,move_y=design.pusher_defense(ball,move_x)
+            #move_x=ball.rx
+            #move_y=100
+            #print(move_x,move_y)
+            if move_x!=-1 and move_y!=-1:
+                #print("Send")
                 ser.SendData(move_x, move_y, 1)
 
             #paddle.draw()
