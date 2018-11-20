@@ -130,11 +130,14 @@ class Ball:
         self.pre_vy = None  # 上一次y
         self.ppre_vx = None  # 上上次x
         self.ppre_vy = None  # 上上次y
+        self.rx=None
+        self.ry=None
+        self.correct=None
     
     def reflesh(self, frame):  # 刷新帧
         self.frame_original = frame.copy()
     
-    def preprocess(self, frame, mode):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
+    def preprocess(self, mode):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
         try:
             '''颜色阈值'''
             hsv = cv.cvtColor(self.frame_original, cv.COLOR_BGR2HSV)  # 颜色空间转化
@@ -161,10 +164,27 @@ class Ball:
             self.y = round(self.y)
             '''轨迹计算mode为True开启'''
             if mode == True:
-                self.vx = (self.x - self.pre_x) / self.sec
-                self.vy = (self.y - self.pre_y) / self.sec
-                if math.fabs(self.x - self.pre_x) > 1 or math.fabs(self.y - self.pre_y) > 1:
+                try:
+                    real = np.matmul(np.array([self.x, self.y,1]), self.correct)
+                    self.rx=real[0];self.ry=real[1]
+                except:
+                    self.rx=self.x;self.ry=self.y
+                try:
+                    self.vx = (self.rx - self.pre_x)
+                    self.vy = (self.ry - self.pre_y)
+                except:
                     pass
+                self.ppre_x = self.pre_x
+                self.ppre_y = self.pre_y
+                self.pre_x = self.rx
+                self.pre_y = self.ry
+                self.ppre_vx = self.pre_vx
+                self.ppre_vy = self.pre_vy
+                self.pre_vx = self.vx
+                self.pre_vy = self.vy
+                if math.fabs(self.vx) > 3 or math.fabs(self.vy) > 3:
+                    self.vx /=self.sec
+                    self.vy /=self.sec
                 else:
                     self.vx = self.vy = 0
                     return

@@ -1,7 +1,7 @@
 import math
+import time
 
-
-def pusher_defense(Ball,x):
+def pusher_defense(Ball):
     ball_x = Ball.rx
     ball_y = Ball.ry
     ball_vx = Ball.vx
@@ -83,7 +83,7 @@ def pusher_defense(Ball,x):
         predict_x = sequence_x[1]
         predict_y = sequence_y[1]
 
-        if abs(predict_x - x) < width:
+        if predict_x>480 or predict_x<40 or predict_y>520 or predict_y<100:
             return -1,-1
         else:
             return int(predict_x), int(predict_y)

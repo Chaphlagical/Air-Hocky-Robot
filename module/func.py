@@ -220,7 +220,7 @@ def show_reduce_noise(desk,hockey,hmin, smin, vmin, hmax, smax, vmax,kernel1,ker
         showerror("Error", str(error) + "\nPlease check!")
 
 
-def show_track(desk,ball,ball_before,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2,sleep_time):  # 显示添加追踪定位标记后的图像
+def show_track(desk,ball,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2,sleep_time):  # 显示添加追踪定位标记后的图像
     showinfo("提示", "退出请按键盘q键,播放过程请勿随意点击菜单界面")
     cv.startWindowThread()
     desk.set_capture()
@@ -229,18 +229,20 @@ def show_track(desk,ball,ball_before,hmin, smin, vmin, hmax, smax, vmax,kernel1,
     ball.kernel_open_size = int(kernel1.get())
     ball.kernel_close_size = int(kernel2.get())
     ball.time = float(sleep_time.get())
+    start=end=0
+
     try:
         while (True):
-            ball.sec = time.time()
-            desk.get_frame()
-            ball_before.reflesh(desk.frame_transformed)
+            start = time.time()
+            ball.pre_x = ball.rx
+            ball.pre_y = ball.ry
             time.sleep(ball.time)
             desk.get_frame()
             ball.reflesh(desk.frame_transformed)
-            ball.sec = time.time() - ball.sec
-            ball_before.preprocess(None,False)
-            ball.preprocess(ball_before,True)
+            ball.sec = start-end
+            ball.preprocess(True)
             ball.draw()
+            end = time.time()
             cv.imshow('camera track', ball.frame_track)
             if cv.waitKey(1) & 0xff == ord('q'):
                 cv.destroyWindow('camera track')
@@ -419,6 +421,7 @@ def Image_Processing(desk,ball,paddle,ser):
     th.start()
 def Image_Processing_target(desk,ball,paddle,ser):
     desk.set_capture()
+    start=end=0
     #ball_before=Ball()
     move_x=move_y=-1
     #flag=0
@@ -460,35 +463,35 @@ def Image_Processing_target(desk,ball,paddle,ser):
         else:
             print("初始化成功！")
     try:
+        ball.correct=paddle.correct
         while(True):
+            start = time.time()
+            time.sleep(ball.time)
+            
             desk.get_frame()
             #paddle.reflesh(desk.frame_transformed)
             #paddle.preprocess(None,True)
-            ball.sec = time.time()-ball.sec
-            desk.get_frame()
+            ball.sec = start-end
             #ball_before.reflesh(desk.frame_transformed)
-            time.sleep(ball.time)
+            
             #desk.get_frame()
             ball.reflesh(desk.frame_transformed)
-            ball.sec = time.time() - ball.sec
+            
             #ball_before.preprocess(None, False)
-            ball.pre_x=ball.x;ball.pre_y=ball.y
-            ball.ppre_x=ball.pre_x;ball.ppre_y=ball.pre_y
-            ball.pre_vx = ball.vx;ball.pre_vy = ball.vy
-            ball.ppre_vx = ball.pre_vx;ball.ppre_vy = ball.pre_vy
+            
             ball.preprocess(True)
             #print('ball', ball.x, ball.y)
             #print('paddle', paddle.x, paddle.y)
-            ball.rx,ball.ry=Get_mcu(paddle.correct,np.array(([ball.x,ball.y,1])))
-            ball.rx=int(ball.rx);ball.ry=int(ball.ry)
             #paddle.rx,paddle.ry=Get_mcu(paddle.correct,np.array(([paddle.x,paddle.y,1])))
             #paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
             #print('ball=',ball.rx,ball.ry)
             #print('paddle=',paddle.rx,paddle.ry)
-            move_x,move_y=design.pusher_defense(ball,move_x)
+            move_x,move_y=design.pusher_defense(ball)
             #move_x=ball.rx
             #move_y=100
-            #print(move_x,move_y)
+            #move_x,move_y=Pridict(ball)
+            print(ball.vx,ball.vy)
+            print(move_x,move_y)
             if move_x!=-1 and move_y!=-1:
                 #print("Send")
                 ser.SendData(move_x, move_y, 1)
@@ -498,6 +501,7 @@ def Image_Processing_target(desk,ball,paddle,ser):
             #if cv.waitKey(1) & 0xff == ord('q'):
                 #cv.destroyWindow('main')
              ##  break
+            end=time.time()
     except Exception as err:
         print(err)
         pass

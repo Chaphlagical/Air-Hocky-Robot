@@ -118,7 +118,7 @@ def ball_set_gui(desk,ball):
     button6 = Button(root, text='设置启动', width=5, height=1, command=set_change)
     button7 = Button(root, text='保存设置', width=5, height=1, command=save_setting)
     button8 = Button(root, text='读取设置', width=5, height=1, command=load_setting)
-    button9 = Button(root, text='显示定位追踪效果', width=12, height=3, command=lambda:show_track(desk,ball,ball_before,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2,sleep_time))
+    button9 = Button(root, text='显示定位追踪效果', width=12, height=3, command=lambda:show_track(desk,ball,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2,sleep_time))
     button10 = Button(root, text='点击查看HSV颜色范围', width=14, height=1, command=show_hsv_thread)
     
     id_button1 = canvas.create_window(150, 50, window=button1)
