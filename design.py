@@ -22,7 +22,7 @@ def pusher_defense(Ball):
     ball_vy2 = Ball.ppre_vy
     #pusher_x2 = Paddle.ppre_x
    # pusher_y2 = Paddle.ppre_y
-    corner_points = {'0':[40,100],'1':[480,100],'2':[480,520],'3':[40,520]}
+    corner_points = {'0':[0+Ball.radius,100],'1':[520-Ball.radius,100],'2':[520-Ball.radius,520],'3':[0+Ball.radius,520]}
     y_limit = 100
     width = 5
     try:
@@ -34,13 +34,13 @@ def pusher_defense(Ball):
             if k > 0 and m < corner_points['0'][0]:
                 b = 2 * k * corner_points['0'][0] + b
                 k = -k
-                m = y_limit-b / k
+                m = (y_limit-b) / k
             if k < 0 and m > corner_points['2'][0]:
                 b = 2 * k * corner_points['2'][0] + b
                 k = -k
-                m = y_limit-b / k
+                m = (y_limit-b) / k
         predict_y = y_limit
-        predict_x = (predict_y - b) / k
+        predict_x = m
 
 
 
@@ -52,13 +52,13 @@ def pusher_defense(Ball):
             if k1 > 0 and m1 < corner_points['0'][0]:
                 b1 = 2 * k1 * corner_points['0'][0] + b1
                 k1 = -k1
-                m1 = y_limit - b1 / k1
+                m1 = (y_limit - b1) / k1
             if k1 < 0 and m1 > corner_points['2'][0]:
                 b1 = 2 * k1 * corner_points['2'][0] + b1
                 k1 = -k1
-                m1 = y_limit - b1 / k1
+                m1 = (y_limit - b1) / k1
         predict_y1 = y_limit
-        predict_x1 = (predict_y - b1) / k1
+        predict_x1 = m1
 
         k2 = ball_vy2 / ball_vx2
         b2 = ball_y2 - k2 * ball_x2
@@ -67,13 +67,13 @@ def pusher_defense(Ball):
             if k2 > 0 and m2 < corner_points['0'][0]:
                 b2 = 2 * k2 * corner_points['0'][0] + b2
                 k2 = -k2
-                m2 = y_limit - b2 / k2
+                m2 = (y_limit - b2) / k2
             if k2 < 0 and m2 > corner_points['2'][0]:
                 b2 = 2 * k2 * corner_points['2'][0] + b2
                 k2 = -k2
-                m2 = y_limit - b2 / k2
+                m2 = (y_limit - b2) / k2
         predict_y2 = y_limit
-        predict_x2 = (predict_y - b2) / k2
+        predict_x2 = m2
 
         sequence_x = [predict_x, predict_x1, predict_x2]
         sequence_y = [predict_y, predict_y1, predict_y2]
@@ -89,4 +89,3 @@ def pusher_defense(Ball):
             return int(predict_x), int(predict_y)
     except:
         return -1,-1
-

@@ -162,7 +162,7 @@ def show_segmentation(desk,hockey,hmin, smin, vmin, hmax, smax, vmax):  # 显示
         while (True):
             desk.get_frame()
             hockey.reflesh(desk.frame_transformed)
-            hockey.preprocess(None,False)
+            hockey.preprocess(False,True)
             cv.imshow('camera segmentation', hockey.frame_segmentation)
             if cv.waitKey(1) & 0xff == ord('q'):
                 cv.destroyWindow('camera segmentation')
@@ -243,6 +243,8 @@ def show_track(desk,ball,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2,slee
             ball.preprocess(True)
             ball.draw()
             end = time.time()
+            print(end-start)
+            #print(ball.vx,ball.vy)
             cv.imshow('camera track', ball.frame_track)
             if cv.waitKey(1) & 0xff == ord('q'):
                 cv.destroyWindow('camera track')
@@ -462,16 +464,19 @@ def Image_Processing_target(desk,ball,paddle,ser):
             print("误差过大，重新采样")
         else:
             print("初始化成功！")
+        ser.can_receive=False
     try:
         ball.correct=paddle.correct
+        time_image=time_usart=time_alg=0
+        time_image_min=1000000
         while(True):
             start = time.time()
-            time.sleep(ball.time)
+            #time.sleep(ball.time)
             
             desk.get_frame()
             #paddle.reflesh(desk.frame_transformed)
             #paddle.preprocess(None,True)
-            ball.sec = start-end
+            #ball.sec = start-end
             #ball_before.reflesh(desk.frame_transformed)
             
             #desk.get_frame()
@@ -480,6 +485,10 @@ def Image_Processing_target(desk,ball,paddle,ser):
             #ball_before.preprocess(None, False)
             
             ball.preprocess(True)
+            mid=time.time()
+          
+            print("图像处理时间：",mid-start)
+            time_image+=mid-start
             #print('ball', ball.x, ball.y)
             #print('paddle', paddle.x, paddle.y)
             #paddle.rx,paddle.ry=Get_mcu(paddle.correct,np.array(([paddle.x,paddle.y,1])))
@@ -487,21 +496,30 @@ def Image_Processing_target(desk,ball,paddle,ser):
             #print('ball=',ball.rx,ball.ry)
             #print('paddle=',paddle.rx,paddle.ry)
             move_x,move_y=design.pusher_defense(ball)
+            mid_=time.time()
+            
+            print("规划算法时间：", mid_ - mid)
+            if mid_ - mid<time_image_min:
+                time_image_min=mid_-mid
+            time_alg+=mid_-mid
             #move_x=ball.rx
             #move_y=100
             #move_x,move_y=Pridict(ball)
-            print(ball.vx,ball.vy)
-            print(move_x,move_y)
+            #print(ball.vx,ball.vy)
+            #print(move_x,move_y)
             if move_x!=-1 and move_y!=-1:
                 #print("Send")
                 ser.SendData(move_x, move_y, 1)
-
+                
+                print("串口时间：",time.time()-mid_)
+                time_usart+=time.time()-mid_
+            
             #paddle.draw()
             #cv.imshow('main', paddle.frame_locate)
             #if cv.waitKey(1) & 0xff == ord('q'):
                 #cv.destroyWindow('main')
              ##  break
-            end=time.time()
+            #end=time.time()
     except Exception as err:
         print(err)
         pass

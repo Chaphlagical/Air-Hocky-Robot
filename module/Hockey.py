@@ -7,6 +7,7 @@ from serial import *
 from serial.tools.list_ports import *
 from threading import *
 import platform
+import time
 
 # 桌子类
 class Desk:
@@ -137,36 +138,44 @@ class Ball:
     def reflesh(self, frame):  # 刷新帧
         self.frame_original = frame.copy()
     
-    def preprocess(self, mode):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
+    def preprocess(self, mode, mode_=False):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
         try:
             '''颜色阈值'''
+            start=time.time()
             hsv = cv.cvtColor(self.frame_original, cv.COLOR_BGR2HSV)  # 颜色空间转化
             self.frame_thresh = cv.inRange(hsv, self.lower, self.upper)  # 取掩模
-            self.frame_segmentation = cv.bitwise_and(self.frame_original, self.frame_original,
-                                                     mask=self.frame_thresh)  # 按位运算
+            if mode_==True:
+                self.frame_segmentation = cv.bitwise_and(self.frame_original, self.frame_original,
+                                                         mask=self.frame_thresh)  # 按位运算
             self.frame_preprocess = cv.morphologyEx(self.frame_thresh, cv.MORPH_OPEN,
                                                     np.ones((self.kernel_open_size, self.kernel_open_size),
                                                             np.uint8))  # 开运算
             self.frame_preprocess = cv.morphologyEx(self.frame_preprocess, cv.MORPH_CLOSE,
                                                     np.ones((self.kernel_close_size, self.kernel_close_size),
                                                             np.uint8))  # 闭运算
+            mid=time.time()
+            print("预处理：",mid-start)
+            
             '''轮廓检测'''
             image, contours, hierarchy = cv.findContours(self.frame_preprocess, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-            area = 0
-            index = 0
-            for i in range(len(contours)):  # 筛选最大面积轮廓
-                if cv.contourArea(contours[i]) > area:
-                    index = i
-                    area = cv.contourArea(contours[i])
-            (self.x, self.y), self.radius = cv.minEnclosingCircle(contours[index])
+            #area = 0
+            contour=None
+            for i in contours:  # 筛选最大面积轮廓
+                if cv.contourArea(i) > 100:
+                    contour=i
+                    break
+            
+            (self.x, self.y), self.radius = cv.minEnclosingCircle(contour)
             self.radius = int(self.radius)
             self.x = round(self.x)
             self.y = round(self.y)
+            mid_=time.time()
+            print("轮廓检测：",mid_-mid)
             '''轨迹计算mode为True开启'''
             if mode == True:
                 try:
                     real = np.matmul(np.array([self.x, self.y,1]), self.correct)
-                    self.rx=real[0];self.ry=real[1]
+                    self.rx=int(real[0]);self.ry=int(real[1])
                 except:
                     self.rx=self.x;self.ry=self.y
                 try:
@@ -182,9 +191,9 @@ class Ball:
                 self.ppre_vy = self.pre_vy
                 self.pre_vx = self.vx
                 self.pre_vy = self.vy
-                if math.fabs(self.vx) > 3 or math.fabs(self.vy) > 3:
-                    self.vx /=self.sec
-                    self.vy /=self.sec
+                print("轨迹运算：",time.time()-mid_)
+                if math.fabs(self.vx) > 2 or math.fabs(self.vy) > 2:
+                    pass
                 else:
                     self.vx = self.vy = 0
                     return
@@ -197,7 +206,7 @@ class Ball:
             self.frame_locate = cv.circle(self.frame_original, center, self.radius, (0, 255, 0), 2)
             self.frame_locate = cv.circle(self.frame_locate, center, 1, (255, 0, 0), 2)
             self.frame_track = self.frame_locate.copy()
-            cv.line(self.frame_track, (self.x, self.y), (int(self.x + 10 * self.vx), int(self.y + 10 * self.vy)),
+            cv.line(self.frame_track, (self.x, self.y), (int(self.x + 300 * self.vx), int(self.y + 300 * self.vy)),
                     (255, 0, 0), 5)
         except Exception as error:
             showerror("Error!", str(error) + "\nPlease check!")
@@ -217,8 +226,8 @@ class Paddle:
         self.angle = 0  # 目标应运动的方向
         self.kernel_open_size = 2  # 开运算核
         self.kernel_close_size = 3  # 闭运算核
-        self.lower = np.array([70, 50, 50])  # 绿色阈值的下限
-        self.upper = np.array([90, 255, 255])  # 绿色阈值的上限
+        self.lower = np.array([156, 25, 100])  # 绿色阈值的下限
+        self.upper = np.array([180, 255, 255])  # 绿色阈值的上限
         self.corner_points = {0: (0, 0), 1: (0, 0),  # 角点字典
                               2: (0, 0), 3: (0, 0)}
         self.mcu_point = (0, 0)  # 单片机坐标
@@ -273,7 +282,7 @@ class Paddle:
 
 class MySerial():#没必要继承Serial类，最好还是创建一个实例，起到隔离方法的作用
     def __init__(self):
-
+        self.can_receive=True;
         self.ser=Serial()
         self.coordinate_or_modification=0  # 0表示目标点的坐标，1表示修正手柄坐标
         self.X_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
@@ -368,7 +377,7 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
             self.ser.close()
 
     def Start_receive_serial(self):
-        while 1:
+        while self.can_receive:
             try:
                 if not self.ser.isOpen():
                     #print('ser is close, thus incable of receiving')
@@ -391,3 +400,5 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
         self.Y_COORDINATE=y
         self.can_send=True
         #print("Send Data:"+str(x)+str(y))
+
+        
