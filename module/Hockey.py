@@ -141,7 +141,7 @@ class Ball:
     def preprocess(self, mode, mode_=False):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
         try:
             '''颜色阈值'''
-            start=time.time()
+            #start=time.time()
             hsv = cv.cvtColor(self.frame_original, cv.COLOR_BGR2HSV)  # 颜色空间转化
             self.frame_thresh = cv.inRange(hsv, self.lower, self.upper)  # 取掩模
             if mode_==True:
@@ -153,8 +153,8 @@ class Ball:
             self.frame_preprocess = cv.morphologyEx(self.frame_preprocess, cv.MORPH_CLOSE,
                                                     np.ones((self.kernel_close_size, self.kernel_close_size),
                                                             np.uint8))  # 闭运算
-            mid=time.time()
-            print("预处理：",mid-start)
+            #mid=time.time()
+            #print("预处理：",mid-start)
             
             '''轮廓检测'''
             image, contours, hierarchy = cv.findContours(self.frame_preprocess, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
@@ -169,8 +169,8 @@ class Ball:
             self.radius = int(self.radius)
             self.x = round(self.x)
             self.y = round(self.y)
-            mid_=time.time()
-            print("轮廓检测：",mid_-mid)
+            #mid_=time.time()
+            #print("轮廓检测：",mid_-mid)
             '''轨迹计算mode为True开启'''
             if mode == True:
                 try:
@@ -191,7 +191,7 @@ class Ball:
                 self.ppre_vy = self.pre_vy
                 self.pre_vx = self.vx
                 self.pre_vy = self.vy
-                print("轨迹运算：",time.time()-mid_)
+             #   print("轨迹运算：",time.time()-mid_)
                 if math.fabs(self.vx) > 2 or math.fabs(self.vy) > 2:
                     pass
                 else:
@@ -279,11 +279,11 @@ class Paddle:
     def get_msg(self,mode):
         self.msg='a'+str(int(mode)) + (3 - len(str(self.rx))) * '0' + str(self.rx) + (3 - len(str(self.ry))) * '0' + str(self.ry)
 
-
 class MySerial():#没必要继承Serial类，最好还是创建一个实例，起到隔离方法的作用
     def __init__(self):
-        self.can_receive=True;
+        self.serial_init=True
         self.ser=Serial()
+        self.can_receive=True
         self.coordinate_or_modification=0  # 0表示目标点的坐标，1表示修正手柄坐标
         self.X_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
         self.Y_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
@@ -329,20 +329,19 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
         self.th = Thread(target=self.Start_serial, args=())
         self.th.setDaemon(True)
         self.th.start()
-        self.mytimer = Timer(1, self.ana_simu_timer)  # 定义定时器timer
-        self.mytimer.start()
-
 
     def Start_serial(self):
         # 提前创建x_coordinate也没用，之后赋值时又会重新创建
         if self.Switch_mode.get() == "开始串口通信":
             self.Switch_mode.set("停止串口通信")
             print("切换到开始")
-            try:
-                self.Serial_init()  # 设置串口信息之后inwaiting会清空
-                self.ser.open()
-            except:
-                showwarning("错误1！", "检查串口设置并重置总开关")
+            if self.serial_init:
+                self.serial_init=False
+                try:
+                    self.Serial_init()  # 设置串口信息之后inwaiting会清空
+                    self.ser.open()
+                except:
+                    showwarning("错误1！", "检查串口设置并重置总开关")
 
             # 开启串口接收线程
             self.th2 = Thread(target=self.Start_receive_serial, args=())
@@ -378,6 +377,7 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
 
     def Start_receive_serial(self):
         while self.can_receive:
+            #print('a')
             try:
                 if not self.ser.isOpen():
                     #print('ser is close, thus incable of receiving')
@@ -393,6 +393,9 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
 
             except:
                 pass
+        '''print("close r")
+        print("close r")
+        print("close r")'''
     
     def SendData(self,x,y,mode):
         self.coordinate_or_modification=mode#0 modification ,1 coordinate

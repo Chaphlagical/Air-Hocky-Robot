@@ -7,6 +7,7 @@ from module.func import *
 import platform
 import tkinter.ttk as ttk
 
+can_receive=True
 class main_gui(MySerial):
     def __init__(self,ball,desk,paddle):
         super().__init__()

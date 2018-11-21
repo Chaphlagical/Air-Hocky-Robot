@@ -344,7 +344,6 @@ desk=Desk()
 paddle=Paddle()
 ser=main_gui(ball,desk,paddle)'''
 def Coordinate_Correction(desk,paddle,winname,ser):
-    #cv.startWindowThread()
     cam_t1=mcu_t1=cam_t2=mcu_t2=cam_t3=mcu_t3=(0,0)
     cam_array=mcu_array=None
     flag=0
@@ -409,6 +408,7 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                 paddle.correct=Correct(cam_array,mcu_array)
                 print(paddle.correct)
                 ser.msg=None
+
                 break
             if cv.waitKey(1) & 0xff == ord('q'):
                 break
@@ -417,11 +417,11 @@ def Coordinate_Correction(desk,paddle,winname,ser):
             print(Err)
             pass
 
-def Image_Processing(desk,ball,paddle,ser):
+'''def Image_Processing(desk,ball,paddle,ser):
     th = threading.Thread(target=lambda :Image_Processing_target(desk,ball,paddle,ser))
     th.setDaemon(True)
-    th.start()
-def Image_Processing_target(desk,ball,paddle,ser):
+    th.start()'''
+def Image_Processing(desk,ball,paddle,ser):
     desk.set_capture()
     start=end=0
     #ball_before=Ball()
@@ -464,7 +464,9 @@ def Image_Processing_target(desk,ball,paddle,ser):
             print("误差过大，重新采样")
         else:
             print("初始化成功！")
-        ser.can_receive=False
+
+
+
     try:
         ball.correct=paddle.correct
         time_image=time_usart=time_alg=0
@@ -487,7 +489,7 @@ def Image_Processing_target(desk,ball,paddle,ser):
             ball.preprocess(True)
             mid=time.time()
           
-            print("图像处理时间：",mid-start)
+            #print("图像处理时间：",mid-start)
             time_image+=mid-start
             #print('ball', ball.x, ball.y)
             #print('paddle', paddle.x, paddle.y)
@@ -498,7 +500,7 @@ def Image_Processing_target(desk,ball,paddle,ser):
             move_x,move_y=design.pusher_defense(ball)
             mid_=time.time()
             
-            print("规划算法时间：", mid_ - mid)
+            #print("规划算法时间：", mid_ - mid)
             if mid_ - mid<time_image_min:
                 time_image_min=mid_-mid
             time_alg+=mid_-mid
@@ -511,7 +513,7 @@ def Image_Processing_target(desk,ball,paddle,ser):
                 #print("Send")
                 ser.SendData(move_x, move_y, 1)
                 
-                print("串口时间：",time.time()-mid_)
+                #print("串口时间：",time.time()-mid_)
                 time_usart+=time.time()-mid_
             
             #paddle.draw()
