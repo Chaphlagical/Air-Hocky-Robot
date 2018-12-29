@@ -19,13 +19,11 @@ paddle = Paddle()
 
 
 
-
-
-
 if __name__=="__main__":
     gui=main_gui(ball,desk,paddle)
     gui.init()
     gui.tk.mainloop()
-
+    while True:
+        pass
 
 

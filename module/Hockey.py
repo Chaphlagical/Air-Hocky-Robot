@@ -9,21 +9,48 @@ from threading import *
 import platform
 import time
 
+class Strategy_var:
+    def __init__(self):
+        self.attack_time = 0
+        self.attack_status = 0
+        self.attack_pos_x = 280
+        self.attack_pos_y = 200
+        self.predict_x_old = -1
+        self.predict_bounce = 0
+        self.predict_bounce_status = 0
+        self.attack_status=0
+        self.status=0
+        self.sign=0
+        self.ball_x=0
+
+class Var:
+    def __init__(self):
+        self.status=0
+        self.attack_x=0
+        self.attack_y=460
+        self.default_x=280
+        self.default_y=100
+        self.limit_y=700
+
 # 桌子类
 class Desk:
     def __init__(self, id=-1):
         if 'Linux' in platform.platform():
             self.id = id  # 摄像头编号
         else:
-            self.id=1
+            self.id = 0
         self.frame = None  # 帧
         self.capture = None  # 视频流
         self.corner_points = {0: (0, 0), 1: (0, 0), 2: (0, 0), 3: (0, 0)}  # 角点字典
         self.frame_transformed = None  # 变换后的帧
+        self.left=70
+        self.right=480
+        self.buttom=100
+        self.top=490
     
     def set_capture(self):
         self.capture = cv.VideoCapture(self.id)
-        self.capture.set(cv.CAP_PROP_FPS,60)
+        self.capture.set(cv.CAP_PROP_FPS, 60)
     
     def release_capture(self):
         self.capture.release()
@@ -31,7 +58,7 @@ class Desk:
     def judge_flag(self):  # 判断角点字典是否填满,作为跳出循环的标志
         count = 0
         for index in self.corner_points.keys():
-            if self.corner_points[index]!= (0, 0):
+            if self.corner_points[index] != (0, 0):
                 count += 1
         if count == 4:
             return True
@@ -71,6 +98,8 @@ class Desk:
     def set_corner_dict(self):  # 设置角点字典
         self.set_capture()
         self.clear_corner_points_dict()
+        self.get_frame()
+        self.get_frame()
         self.get_frame()
         
         def MouseCallBackfunc(event, x, y, flags, param):  # 设置触发响应函数
@@ -117,23 +146,24 @@ class Ball:
         self.uint_y = 0  # 目标运动单位方向的y分量
         self.kernel_open_size = 4  # 开运算核
         self.kernel_close_size = 3  # 闭运算核
-        self.lower = np.array([115, 50, 50])  # 蓝色阈值的下限
+        self.lower = np.array([113, 50, 50])  # 蓝色阈值的下限
         self.upper = np.array([125, 255, 255])  # 蓝色阈值的上限
         self.corner_points = {0: (0, 0), 1: (0, 0),  # 角点字典
                               2: (0, 0), 3: (0, 0)}
         self.time = 0  # 两帧停留的时间
+        self.pretime = 0
         self.sec = 0
-        self.pre_x = None#上一次x
-        self.pre_y = None#上一次y
-        self.ppre_x = None#上上次x
-        self.ppre_y = None#上上次y
+        self.pre_x = None  # 上一次x
+        self.pre_y = None  # 上一次y
+        self.ppre_x = None  # 上上次x
+        self.ppre_y = None  # 上上次y
         self.pre_vx = None  # 上一次x
         self.pre_vy = None  # 上一次y
         self.ppre_vx = None  # 上上次x
         self.ppre_vy = None  # 上上次y
-        self.rx=None
-        self.ry=None
-        self.correct=None
+        self.rx = None
+        self.ry = None
+        self.correct = None
     
     def reflesh(self, frame):  # 刷新帧
         self.frame_original = frame.copy()
@@ -141,10 +171,10 @@ class Ball:
     def preprocess(self, mode, mode_=False):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
         try:
             '''颜色阈值'''
-            #start=time.time()
+            # start=time.time()
             hsv = cv.cvtColor(self.frame_original, cv.COLOR_BGR2HSV)  # 颜色空间转化
             self.frame_thresh = cv.inRange(hsv, self.lower, self.upper)  # 取掩模
-            if mode_==True:
+            if mode_ == True:
                 self.frame_segmentation = cv.bitwise_and(self.frame_original, self.frame_original,
                                                          mask=self.frame_thresh)  # 按位运算
             self.frame_preprocess = cv.morphologyEx(self.frame_thresh, cv.MORPH_OPEN,
@@ -153,34 +183,42 @@ class Ball:
             self.frame_preprocess = cv.morphologyEx(self.frame_preprocess, cv.MORPH_CLOSE,
                                                     np.ones((self.kernel_close_size, self.kernel_close_size),
                                                             np.uint8))  # 闭运算
-            #mid=time.time()
-            #print("预处理：",mid-start)
+            # mid=time.time()
+            # print("预处理：",mid-start)
             
             '''轮廓检测'''
             image, contours, hierarchy = cv.findContours(self.frame_preprocess, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-            #area = 0
-            contour=None
+            # area = 0
+            contour = None
             for i in contours:  # 筛选最大面积轮廓
                 if cv.contourArea(i) > 100:
-                    contour=i
+                    contour = i
                     break
             
             (self.x, self.y), self.radius = cv.minEnclosingCircle(contour)
             self.radius = int(self.radius)
             self.x = round(self.x)
             self.y = round(self.y)
-            #mid_=time.time()
-            #print("轮廓检测：",mid_-mid)
+            try:
+                real = np.matmul(np.array([self.x, self.y, 1]), self.correct)
+                self.rx = int(real[0])
+                self.ry = int(real[1])
+            except:
+                self.rx = self.x
+                self.ry = self.y
+            # mid_=time.time()
+            # print("轮廓检测：",mid_-mid)
             '''轨迹计算mode为True开启'''
             if mode == True:
+
                 try:
-                    real = np.matmul(np.array([self.x, self.y,1]), self.correct)
-                    self.rx=int(real[0]);self.ry=int(real[1])
-                except:
-                    self.rx=self.x;self.ry=self.y
-                try:
-                    self.vx = (self.rx - self.pre_x)
-                    self.vy = (self.ry - self.pre_y)
+                    if abs(self.rx - self.pre_x)>1 or abs(self.ry-self.pre_y)>1:
+                        self.vx = (self.rx - self.pre_x)/(self.time-self.pretime)
+                        self.vy = (self.ry - self.pre_y)/(self.time-self.pretime)
+                        self.pretime=self.time
+                    else:
+                        self.vx=self.vy=0
+                        self.pretime = self.time
                 except:
                     pass
                 self.ppre_x = self.pre_x
@@ -191,7 +229,7 @@ class Ball:
                 self.ppre_vy = self.pre_vy
                 self.pre_vx = self.vx
                 self.pre_vy = self.vy
-             #   print("轨迹运算：",time.time()-mid_)
+                #   print("轨迹运算：",time.time()-mid_)
                 if math.fabs(self.vx) > 2 or math.fabs(self.vy) > 2:
                     pass
                 else:
@@ -199,6 +237,7 @@ class Ball:
                     return
         except Exception as error:
             pass
+    
     def draw(self):
         try:
             self.frame_locate = self.frame_original.copy()
@@ -232,15 +271,14 @@ class Paddle:
                               2: (0, 0), 3: (0, 0)}
         self.mcu_point = (0, 0)  # 单片机坐标
         self.correct = None  # 纠正矩阵
-        self.rx=None #纠正后的x坐标
-        self.ry=None #纠正后的y坐标
-        self.msg=None #串口数据
-        
+        self.rx = None  # 纠正后的x坐标
+        self.ry = None  # 纠正后的y坐标
+        self.msg = None  # 串口数据
     
     def reflesh(self, frame):  # 刷新帧
         self.frame_original = frame.copy()
     
-    def preprocess(self, frame, mode):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
+    def preprocess(self, frame=None, mode=None):  # 预处理,利用输入的帧生成frame_thresh,frame_segmentation,frame_preprocess
         try:
             '''颜色阈值'''
             hsv = cv.cvtColor(self.frame_original, cv.COLOR_BGR2HSV)  # 颜色空间转化
@@ -265,6 +303,11 @@ class Paddle:
             self.radius = int(self.radius)
             self.x = round(self.x)
             self.y = round(self.y)
+            real = np.matmul(np.array(([self.x, self.y, 1])), self.correct)
+            self.rx=real[0]
+            self.ry=real[1]
+            self.rx = int(self.rx)
+            self.ry = int(self.ry)
         except:
             pass
     
@@ -276,24 +319,28 @@ class Paddle:
         except Exception as error:
             showerror("Error!", str(error) + "\nPlease check!")
     
-    def get_msg(self,mode):
-        self.msg='a'+str(int(mode)) + (3 - len(str(self.rx))) * '0' + str(self.rx) + (3 - len(str(self.ry))) * '0' + str(self.ry)
+    def get_msg(self, mode):
+        self.msg = 'a' + str(int(mode)) + (3 - len(str(self.rx))) * '0' + str(self.rx) + (
+                    3 - len(str(self.ry))) * '0' + str(self.ry)
 
-class MySerial():#没必要继承Serial类，最好还是创建一个实例，起到隔离方法的作用
+
+class MySerial():  # 没必要继承Serial类，最好还是创建一个实例，起到隔离方法的作用
     def __init__(self):
-        self.serial_init=True
-        self.ser=Serial()
-        self.can_receive=True
-        self.coordinate_or_modification=0  # 0表示目标点的坐标，1表示修正手柄坐标
-        self.X_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
-        self.Y_COORDINATE=0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
-        self.can_send=False  # 每次策略函数更新一次数据就把它置真一次
-
+        self.serial_init = True
+        self.ser = Serial()
+        self.can_receive = True
+        self.coordinate_or_modification = 0  # 0表示目标点的坐标，1表示修正手柄坐标
+        self.X_COORDINATE = 0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
+        self.Y_COORDINATE = 0  # 整型量，不管是修正手柄坐标还是指示目标坐标，都存在这里面
+        self.can_send = False  # 每次策略函数更新一次数据就把它置真一次
+        
         self.RECEIVE_X_COORDINATE = 0
         self.RECEIVE_Y_COORDINATE = 0
-        
-        self.msg=None
 
+        self.mode=False
+
+        self.msg = None
+        
         # 定义参数字典
         # dict_COM没有设置必要，本来就需要用字符串赋值
         self.dict_Baudrate = {"9600": 9600, "14500": 14500}
@@ -301,107 +348,100 @@ class MySerial():#没必要继承Serial类，最好还是创建一个实例，�
         self.dict_Stopbits = {"1": 1, "1.5": 1.5, "2": 2}
         self.dict_Parity = {"No": 'N', "Even": 'E', "Odd": "O", "Mark": "M", "Space": 'S'}
 
+        self.paddle=None
+        self.ball=None
+        self.desk=None
 
     def Serial_init(self):
-        self.ser.port = self.Port.get()#Port变量是gui部分的，怎么才能访问到它
+        self.ser.port = self.Port.get()  # Port变量是gui部分的，怎么才能访问到它
         self.ser.baudrate = self.dict_Baudrate[self.Baudrate.get()]
         self.ser.bytesize = self.dict_Bytesize[self.Bytesize.get()]
         self.stopbits = self.dict_Stopbits[self.Stopbits.get()]
         self.parity = self.dict_Parity[self.Parity.get()]
-
+    
     def ana_simu_timer(self):
-
-
+        
         if self.X_COORDINATE < 500:
             self.X_COORDINATE = self.X_COORDINATE + 1
         else:
             self.X_COORDINATE = 100
-
+        
         if self.Y_COORDINATE < 500:
             self.Y_COORDINATE = self.Y_COORDINATE + 1
         else:
             self.Y_COORDINATE = 100
             self.can_send = True
-        #self.mytimer = Timer(1, self.ana_simu_timer)  # 自调mytimer#不能省略！赋值定义就是初始化，执行过一次之后必须初始化！有标记的
-        #self.mytimer.start()
-
+        # self.mytimer = Timer(1, self.ana_simu_timer)  # 自调mytimer#不能省略！赋值定义就是初始化，执行过一次之后必须初始化！有标记的
+        # self.mytimer.start()
+    
     def Start_serial_launcher(self):
-        self.th = Thread(target=self.Start_serial, args=())
-        self.th.setDaemon(True)
-        self.th.start()
-
-    def Start_serial(self):
         # 提前创建x_coordinate也没用，之后赋值时又会重新创建
-        if self.Switch_mode.get() == "开始串口通信":
-            self.Switch_mode.set("停止串口通信")
-            print("切换到开始")
+        if self.Switch_mode.get() == "打开串口":
+            self.Switch_mode.set("关闭串口")
+            print("串口已打开")
             if self.serial_init:
-                self.serial_init=False
+                self.serial_init = False
                 try:
                     self.Serial_init()  # 设置串口信息之后inwaiting会清空
                     self.ser.open()
                 except:
                     showwarning("错误1！", "检查串口设置并重置总开关")
-
+            
             # 开启串口接收线程
             self.th2 = Thread(target=self.Start_receive_serial, args=())
             self.th2.setDaemon(True)
             self.th2.start()
-
-            while 1:  # 不必设置全局变量cansend，因为并行线程如果进入关闭模式，会直接关闭串口，这个线程会跟着发送错误然后退出
-                try:
-                    # ser.write(bytes(Message, encoding='gbk'))  # message是个字符
-                    if self.can_send:
-                        self.x_coordinate = self.X_COORDINATE
-                        self.y_coordinate = self.Y_COORDINATE
-                        self.can_send = False  # 为了避免发送过程中数据更新，那就把允许发送标记的置假放在一开始就行了......
-
-                        self.ser.write(b"a")  # 先发送校验位'
-
-                        self.ser.write(bytes(chr(self.coordinate_or_modification + 48), encoding='ascii'))  # ord('0')=48
-                        self.ser.write(bytes(chr(self.x_coordinate // 100 + 48), encoding='ascii'))  # 如果发送过程中被改了怎么办？必须先复制一次两个坐标！
-                        self.ser.write(bytes(chr(self.x_coordinate % 100 // 10 + 48), encoding='ascii'))
-                        self.ser.write(bytes(chr(self.x_coordinate % 10 + 48), encoding='ascii'))
-                        self.ser.write(bytes(chr(self.y_coordinate // 100 + 48), encoding='ascii'))
-                        self.ser.write(bytes(chr(self.y_coordinate % 100 // 10 + 48), encoding='ascii'))
-                        self.ser.write(bytes(chr(self.y_coordinate % 10 + 48), encoding='ascii'))
-                        time.sleep(0.01)  # 暂停0.1秒，等待单片机
-                except:
-                    if self.ser.isOpen():  # 区分两种情形
-                        showwarning("错误2！", "检查串口设置并重置总开关")
-                    break
-        elif self.Switch_mode.get() == "停止串口通信":
-            self.Switch_mode.set("开始串口通信")
-            print("切换到停止")
+        elif self.Switch_mode.get() == "关闭串口":
+            self.Switch_mode.set("打开串口")
+            self.serial_init = True
+            print("串口已关闭")
             self.ser.close()
+    
+    def Call_serial(self):
+        try:
+            # ser.write(bytes(Message, encoding='gbk'))  # message是个字符
 
+            self.x_coordinate = self.X_COORDINATE
+            self.y_coordinate = self.Y_COORDINATE
+            #self.can_send = False  # 为了避免发送过程中数据更新，那就把允许发送标记的置假放在一开始就行了......
+            
+            self.ser.write(b"a")  # 先发送校验位'
+            
+            self.ser.write(bytes(chr(self.coordinate_or_modification + 48), encoding='ascii'))  # ord('0')=48
+            self.ser.write(bytes(chr(self.x_coordinate // 100 + 48), encoding='ascii'))  # 如果发送过程中被改了怎么办？必须先复制一次两个坐标！
+            self.ser.write(bytes(chr(self.x_coordinate % 100 // 10 + 48), encoding='ascii'))
+            self.ser.write(bytes(chr(self.x_coordinate % 10 + 48), encoding='ascii'))
+            self.ser.write(bytes(chr(self.y_coordinate // 100 + 48), encoding='ascii'))
+            self.ser.write(bytes(chr(self.y_coordinate % 100 // 10 + 48), encoding='ascii'))
+            self.ser.write(bytes(chr(self.y_coordinate % 10 + 48), encoding='ascii'))
+            time.sleep(0.005)  # 暂停0.1秒，等待单片机
+        except Exception as err:
+            if self.ser.isOpen():  # 区分两种情形
+                showwarning("错误2！", "检查串口设置并重置总开关")
+                print(err)
+    
     def Start_receive_serial(self):
         while self.can_receive:
-            #print('a')
+            # print('a')
             try:
                 if not self.ser.isOpen():
-                    #print('ser is close, thus incable of receiving')
+                    # print('ser is close, thus incable of receiving')
                     break
-
+                
                 if self.ser.inWaiting() > 0:
-                    self.msg = str(self.ser.read(1))[2]  # 重要知识，ser.write参数必须是bytes，ser.read的输出参数也是bytes
-                    '''if ch == b'b':
-                        self.RECEIVE_X_COORDINATE = int(self.ser.read(1)) * 100 + int(self.ser.read(1)) * 10 + int(self.ser.read(1))
-                        self.RECEIVE_Y_COORDINATE = int(self.ser.read(1)) * 100 + int(self.ser.read(1)) * 10 + int(self.ser.read(1))
-                        print(self.RECEIVE_X_COORDINATE)
-                        print(self.RECEIVE_Y_COORDINATE)'''
+                    self.msg = str(self.ser.read(1))[2]
+                    self.desk.get_frame()
+
+                    # 重要知识，ser.write参数必须是bytes，ser.read的输出参数也是bytes
 
             except:
                 pass
-        '''print("close r")
-        print("close r")
-        print("close r")'''
     
-    def SendData(self,x,y,mode):
-        self.coordinate_or_modification=mode#0 modification ,1 coordinate
-        self.X_COORDINATE=x
-        self.Y_COORDINATE=y
-        self.can_send=True
-        #print("Send Data:"+str(x)+str(y))
+    def SendData(self, x, y, mode):
+        self.coordinate_or_modification = mode  # 0 modification ,1 coordinate
+        self.X_COORDINATE = x
+        self.Y_COORDINATE = y
+        self.Call_serial()
+        # print("Send Data:"+str(x)+str(y))
 
         

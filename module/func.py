@@ -4,10 +4,12 @@ from tkinter import*
 from tkinter.messagebox import *
 import cv2 as cv
 from module.Strategy import *
-import threading
+from threading import*
 from module.Hockey import*
 import time
 import design
+import math
+import numpy as np
 
 # 获取摄像头id列表
 def Cam_Select():
@@ -243,7 +245,7 @@ def show_track(desk,ball,hmin, smin, vmin, hmax, smax, vmax,kernel1,kernel2,slee
             ball.preprocess(True)
             ball.draw()
             end = time.time()
-            print(end-start)
+            print(ball.x,ball.y)
             #print(ball.vx,ball.vy)
             cv.imshow('camera track', ball.frame_track)
             if cv.waitKey(1) & 0xff == ord('q'):
@@ -339,11 +341,12 @@ def Set_Paddle_Track_Param(root, canvas, paddle):
     return hmin, smin, vmin, hmax, smax, vmax, kernel1, kernel2
 
 
+
 '''ball=Ball()
 desk=Desk()
 paddle=Paddle()
 ser=main_gui(ball,desk,paddle)'''
-def Coordinate_Correction(desk,paddle,winname,ser):
+def Coordinate_Correction(desk,paddle,ser):
     cam_t1=mcu_t1=cam_t2=mcu_t2=cam_t3=mcu_t3=(0,0)
     cam_array=mcu_array=None
     flag=0
@@ -354,7 +357,7 @@ def Coordinate_Correction(desk,paddle,winname,ser):
             desk.get_frame()
             paddle.reflesh(desk.frame_transformed)
             paddle.preprocess(None, True)
-            time.sleep(0.6)
+            time.sleep(1)
             if ser.msg=='1':
                 #print(paddle.x, paddle.y)
                 #x:40~480 y:100~520
@@ -408,122 +411,146 @@ def Coordinate_Correction(desk,paddle,winname,ser):
                 paddle.correct=Correct(cam_array,mcu_array)
                 print(paddle.correct)
                 ser.msg=None
-
-                break
-            if cv.waitKey(1) & 0xff == ord('q'):
-                break
+                return cam_array,mcu_array
         except Exception as Err:
             ser.SendData(260,100,0)
             print(Err)
             pass
 
-'''def Image_Processing(desk,ball,paddle,ser):
-    th = threading.Thread(target=lambda :Image_Processing_target(desk,ball,paddle,ser))
-    th.setDaemon(True)
-    th.start()'''
-def Image_Processing(desk,ball,paddle,ser):
-    desk.set_capture()
-    start=end=0
-    #ball_before=Ball()
-    move_x=move_y=-1
-    #flag=0
-    #cv.startWindowThread()
-    #cv.namedWindow('main')
-    Coordinate_Correction(desk,paddle,'main',ser)
-    desk.get_frame()
-    desk.get_frame()
-    desk.get_frame()
-    desk.get_frame()
-    desk.get_frame()
-    paddle.reflesh(desk.frame_transformed)
-    paddle.preprocess(None,True)
-    paddle.rx, paddle.ry = Get_mcu(paddle.correct, np.array(([paddle.x, paddle.y, 1])))
-    paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
-    print(paddle.rx,paddle.ry)
-    bias=math.fabs(paddle.rx-260)+math.fabs(paddle.ry-100)
-    print("误差：",bias)
-    if bias>6:
+def Affine_Transform(ser):
+    Coordinate_Correction(ser.desk, ser.paddle, ser)
+    ser.desk.get_frame()
+    ser.desk.get_frame()
+    ser.desk.get_frame()
+    ser.desk.get_frame()
+    ser.desk.get_frame()
+    ser.paddle.reflesh(ser.desk.frame_transformed)
+    ser.paddle.preprocess(None, True)
+    ser.paddle.rx, ser.paddle.ry = Get_mcu(ser.paddle.correct, np.array(([ser.paddle.x, ser.paddle.y, 1])))
+    ser.paddle.rx = int(ser.paddle.rx)
+    ser.paddle.ry = int(ser.paddle.ry)
+    print(ser.paddle.rx, ser.paddle.ry)
+    bias = math.fabs(ser.paddle.rx - 260) + math.fabs(ser.paddle.ry - 100)
+    print("误差：", bias)
+    if bias > 6:
         print("误差过大，重新采样")
     else:
         print("初始化成功！")
-    while(bias>6):
-        Coordinate_Correction(desk, paddle, 'main', ser)
-        desk.get_frame()
-        desk.get_frame()
-        desk.get_frame()
-        desk.get_frame()
-        desk.get_frame()
-        paddle.reflesh(desk.frame_transformed)
-        paddle.preprocess(None, True)
-        paddle.rx, paddle.ry = Get_mcu(paddle.correct, np.array(([paddle.x, paddle.y, 1])))
-        paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
-        print(paddle.rx, paddle.ry)
-        bias = math.fabs(paddle.rx - 260) + math.fabs(paddle.ry - 100)
+    while (bias > 6):
+        cam_array, mcu_array = Coordinate_Correction(ser.desk, ser.paddle, ser)
+        ser.desk.get_frame()
+        ser.desk.get_frame()
+        ser.desk.get_frame()
+        ser.desk.get_frame()
+        ser.desk.get_frame()
+        ser.paddle.reflesh(ser.desk.frame_transformed)
+        ser.paddle.preprocess(None, True)
+        ser.paddle.rx, ser.paddle.ry = Get_mcu(ser.paddle.correct, np.array(([ser.paddle.x, ser.paddle.y, 1])))
+        ser.paddle.rx = int(ser.paddle.rx)
+        ser.paddle.ry = int(ser.paddle.ry)
+        print(ser.paddle.rx, ser.paddle.ry)
+        bias = math.fabs(ser.paddle.rx - 260) + math.fabs(ser.paddle.ry - 100)
         print("误差：", bias)
         if bias > 6:
             print("误差过大，重新采样")
         else:
             print("初始化成功！")
+    ser.mode = True
 
-
-
+'''def Image_Processing(desk,ball,paddle,ser):
+    th = threading.Thread(target=lambda :Image_Processing_target(desk,ball,paddle,ser))
+    th.setDaemon(True)
+    th.start()'''
+def Play(ser):
+    strategy_var = Strategy_var()
+    __move_x = __move_y = -1
+    count=0
+    mcu_x=260
+    mcu_y=100
     try:
-        ball.correct=paddle.correct
-        time_image=time_usart=time_alg=0
-        time_image_min=1000000
-        while(True):
-            start = time.time()
-            #time.sleep(ball.time)
-            
-            desk.get_frame()
-            #paddle.reflesh(desk.frame_transformed)
-            #paddle.preprocess(None,True)
-            #ball.sec = start-end
-            #ball_before.reflesh(desk.frame_transformed)
-            
-            #desk.get_frame()
-            ball.reflesh(desk.frame_transformed)
-            
-            #ball_before.preprocess(None, False)
-            
-            ball.preprocess(True)
-            mid=time.time()
-          
-            #print("图像处理时间：",mid-start)
-            time_image+=mid-start
-            #print('ball', ball.x, ball.y)
-            #print('paddle', paddle.x, paddle.y)
-            #paddle.rx,paddle.ry=Get_mcu(paddle.correct,np.array(([paddle.x,paddle.y,1])))
-            #paddle.rx = int(paddle.rx);paddle.ry = int(paddle.ry)
-            #print('ball=',ball.rx,ball.ry)
-            #print('paddle=',paddle.rx,paddle.ry)
-            move_x,move_y=design.pusher_defense(ball)
-            mid_=time.time()
-            
-            #print("规划算法时间：", mid_ - mid)
-            if mid_ - mid<time_image_min:
-                time_image_min=mid_-mid
-            time_alg+=mid_-mid
-            #move_x=ball.rx
-            #move_y=100
-            #move_x,move_y=Pridict(ball)
-            #print(ball.vx,ball.vy)
-            #print(move_x,move_y)
-            if move_x!=-1 and move_y!=-1:
-                #print("Send")
+        ser.msg='a'
+        ser.ball.correct=ser.paddle.correct
+        while(not ser.mode):
+            print("no matrix!")
+        while(ser.mode):
+            count+=1
+
+            '''if count>5000000:
+                print("Correct!")
+                bias_x=mcu_x-ser.paddle.rx
+                bias_y=mcu_y-ser.paddle.ry
+                print("bias",bias_x,bias_y)
+                mcu_x=mcu_x+bias_x
+                mcu_y=mcu_y+bias_y
+                ser.SendData(mcu_x+bias_x, mcu_y+bias_y, 0)
+                count=0'''
+
+
+            '''重算变换矩阵
+            if ser.msg!=None:
+                cam_array[0:2]=cam_array[1:3]
+                cam_array[2]=[paddle.x,paddle.y,1]
+                mcu_array[0:2]=mcu_array[1:3]
+                mcu_array[2]=[move_x,move_y]
+                try:
+                    ball.correct=paddle.correct=Correct(cam_array,mcu_array)
+                except:
+                    pass
+                ser.msg=None'''
+
+            try:
+                _move_x,_move_y=design.newdatastrategy(strategy_var, ser.ball, ser.paddle)
+                if _move_x!=__move_x or _move_y!=__move_y:
+                    __move_x=_move_x
+                    move_x = __move_x
+                    __move_y=_move_y
+                    move_y = __move_y
+                else:
+                    move_x=move_y=-1
+            except:
+                move_x=move_y=-1
+                pass
+
+            if move_x!=-1 and move_y!=-1 and move_x>=ser.desk.left and move_x<=ser.desk.right and move_y>=ser.desk.buttom and move_y<=ser.desk.top:
+                move_x=int(move_x)
+                move_y=int(move_y)
                 ser.SendData(move_x, move_y, 1)
-                
+                count=0
+                mcu_x=move_x
+                mcu_y=move_y
                 #print("串口时间：",time.time()-mid_)
-                time_usart+=time.time()-mid_
-            
-            #paddle.draw()
-            #cv.imshow('main', paddle.frame_locate)
-            #if cv.waitKey(1) & 0xff == ord('q'):
-                #cv.destroyWindow('main')
-             ##  break
-            #end=time.time()
+            #if ball.rx>740:
+             #   beep()
+
     except Exception as err:
         print(err)
         pass
-    
-    
+
+
+def Thread_play(ser):
+    th2 = Thread(target=lambda :Play(ser), args=())
+    th2.setDaemon(True)
+    th2.start()
+
+def Thread_dip(ser):
+    th2 = Thread(target=lambda :dip(ser), args=())
+    th2.setDaemon(True)
+    th2.start()
+
+
+def dip(ser):
+    ser.desk.set_capture()
+    Affine_Transform(ser)
+    while(True):
+        ser.desk.get_frame()
+        ser.ball.time = time.time()
+        ser.ball.reflesh(ser.desk.frame_transformed)
+        ser.ball.preprocess(True)
+        ser.ball.draw()
+        cv.imshow("camera",ser.ball.frame_locate)
+        #ser.paddle.reflesh(ser.desk.frame_transformed)
+        #ser.paddle.preprocess()
+        #print("ball.rx=",ser.ball.rx,"  ball.ry",ser.ball.ry)
+        #print("paddle.rx=", ser.paddle.rx, "  paddle.ry", ser.paddle.ry)
+        if cv.waitKey(1)&0xff==ord('q'):
+            break

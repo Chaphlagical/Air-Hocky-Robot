@@ -6,6 +6,8 @@ from module.gui_module import *
 from module.func import *
 import platform
 import tkinter.ttk as ttk
+from module.Drawpad import *
+from module.KeyBoard import *
 
 can_receive=True
 class main_gui(MySerial):
@@ -89,11 +91,18 @@ class main_gui(MySerial):
         self.camera_image = PhotoImage(file='./Matrial/Photo/camera.png')
         self.label30 = LabelFrame(self.tk, height=150, width=120, text="点击进入监控模式", labelanchor='n',
                              bg="whitesmoke")  # self.labelanchor属性解决定位问题（n:北，nw:西北，center:正中，其余类推）
-        self.button31 = Button(self.tk, image=self.camera_image, width=100, height=120, command=lambda: Image_Processing(self.desk,self.ball,self.paddle,self))
+        self.button31 = Button(self.tk, image=self.camera_image, width=100, height=120, command=lambda: Thread_play(self))
         self.button32 = Button(self.tk, text='摄像头设置', width=15, height=1, command=lambda: Cam_Setting(self.desk, self.ball, self.paddle))
+
+        self.button35 = Button(self.tk, text='开始图像处理', width=15, height=1, command=lambda:Thread_dip(self))
+        self.button34 = Button(self.tk, text='视频模式', width=15, height=1,command=lambda:Thread_cam(self) )
+        self.button33 = Button(self.tk, text='画图模式', width=15, height=1, command=lambda :Thread_Pad(self))
         self.id30 = self.canvas.create_window(215, 140, window=self.label30)
         self.id31 = self.canvas.create_window(215, 145, window=self.button31)
-        self.id32 = self.canvas.create_window(360, 203, window=self.button32)
+        self.id32 = self.canvas.create_window(360, 200, window=self.button32)
+        self.id33 = self.canvas.create_window(360, 230, window=self.button33)
+        self.id34 = self.canvas.create_window(360, 260, window=self.button34)
+
         # self.id31.pack()
 
 
@@ -127,10 +136,10 @@ class main_gui(MySerial):
         self.id56 = self.canvas.create_window(400, 120, window=self.label56)
         self.id57 = self.canvas.create_window(400, 145, window=self.label57)
         self.id58 = self.canvas.create_window(400, 170, window=self.label58)
-
+        self.id35 = self.canvas.create_window(210, 230, window=self.button35)
         # 总开关
 
-        self.Switch_mode.set("开始串口通信")
+        self.Switch_mode.set("打开串口")
 
 
 
@@ -152,9 +161,9 @@ class main_gui(MySerial):
             self.id72 = self.canvas.create_window(245, 320, window=self.label72)
         else:
             self.label71 = Label(self.tk, text="Le vent se lève", font=("Kunstler Script", 50), bg='whitesmoke')
-            self.id71 = self.canvas.create_window(150, 260, window=self.label71)
+            self.id71 = self.canvas.create_window(150, 280, window=self.label71)
             self.label72 = Label(self.tk, text="il faut tenter de vivre", font=("Kunstler Script", 50), bg='whitesmoke')
-            self.id72 = self.canvas.create_window(245, 320, window=self.label72)
+            self.id72 = self.canvas.create_window(245, 340, window=self.label72)
 
     def Searching_port_launcher(self):
         self.th = Thread(target=self.Searching_port)
